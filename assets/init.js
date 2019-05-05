@@ -2,25 +2,30 @@
 //
 // }
 
-(function (Drupal, drupalSettings ) {
+(function (Drupal, drupalSettings) {
   Drupal.behaviors.editorJS = {
     attach: function (context, settings) {
       context = context || document;
       settings = settings || drupalSettings;
 
       let data_element = context.querySelector('[name="field_content[0][hide_element]"]');
-      
+
       if (data_element === null) {
         return;
       }
-      
+
       let data = data_element.value;
       let newHeader = this.getPlugin(Header);
       const editor = new EditorJS({
         holder: 'editorjs',
         autofocus: true,
         tools: {
-          header: newHeader
+          header: {
+            class: newHeader,
+            config: {
+              placeholder: Drupal.t('Enter a header')
+            }
+          },
         },
         data: {
           blocks: JSON.parse(data)
@@ -31,16 +36,15 @@
           });
         }
       });
-      console.log(editor)
     },
     getPlugin: function (plugin) {
       let plugin_wrapper = plugin;
-      plugin_wrapper.prototype.save = function(toolsContent) {
+      plugin_wrapper.prototype.save = function (toolsContent) {
         return {
           text: toolsContent.innerHTML,
           level: this.currentLevel.number,
           pid: this.data.pid || 'new',
-          type: this.data.type
+          type: this.data.type || 'header'
         };
       };
       return plugin_wrapper;

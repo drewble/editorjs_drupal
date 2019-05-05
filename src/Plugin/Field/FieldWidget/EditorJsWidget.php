@@ -3,6 +3,7 @@
 namespace Drupal\editorjs\Plugin\Field\FieldWidget;
 
 use Drupal\Component\Serialization\Json;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
@@ -125,15 +126,32 @@ class EditorJsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
   }
 
   /**
+   * Massages the form values into the format expected for field values.
+   *
    * @param array $elements
    * @param \Drupal\Core\Form\FormStateInterface $form_state
    * @param array $form
    * @throws \Drupal\Component\Plugin\Exception\PluginException
+   * @throws \Drupal\Core\Entity\EntityStorageException
    */
   public function elementValidate(array $elements, FormStateInterface $form_state, array $form) {
 
     $blocks = Json::decode($elements['#value']);
     $field_name = $this->fieldDefinition->getName();
+
+    // Remove paragraphs.
+    /** @var EntityInterface $entity */
+    $entity = $form_state
+      ->getFormObject()
+      ->getEntity();
+    if (!$entity->get($field_name)->isEmpty()) {
+      /** @var ParagraphInterface $paragraph */
+      foreach ($entity->get($field_name)->referencedEntities() as $paragraph) {
+        if ($this->isRemove($paragraph->id(), $blocks)) {
+          $paragraph->delete();
+        }
+      }
+    }
 
     foreach ($blocks as $weight => $block) {
       if ($paragraph = $this->prepareEntity($block)) {
@@ -182,6 +200,15 @@ class EditorJsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
       return $plugin_instance->getData($paragraph);
     }
     return FALSE;
+  }
+
+  protected function isRemove($pid, $newData = []) {
+    foreach ($newData as $block) {
+      if ($block['data']['pid'] === $pid) {
+        return FALSE;
+      }
+    }
+    return TRUE;
   }
 
 }
