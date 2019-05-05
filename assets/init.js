@@ -31,7 +31,7 @@
           });
         }
       });
-
+      console.log(editor)
     },
     getPlugin: function (plugin) {
       let plugin_wrapper = plugin;

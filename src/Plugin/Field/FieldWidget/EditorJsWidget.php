@@ -140,7 +140,6 @@ class EditorJsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
         $form_state->setValue([$field_name, $weight, 'entity'], $paragraph);
       }
     }
-
   }
 
   /**
