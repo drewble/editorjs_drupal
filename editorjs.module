@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for Editor.js for paragraph module.
+ *
+ * @DCG
+ * This file is no longer required in Drupal 8.
+ * @see https://www.drupal.org/node/2217931
+ */
+
+/**
+ * Implements hook_rebuild().
+ */
+function editorjs_rebuild() {
+  /** @var  \Drupal\editorjs\EditorjsPluginManager $manager */
+  $manager = \Drupal::service('plugin.manager.editorjs');
+  vd($manager->getDefinitions());
+}

@@ -1,0 +1,7 @@
+name: Editor.js for paragraph
+type: module
+description: The description.
+package: Custom
+core: 8.x
+dependencies:
+  - paragraphs:paragraphs

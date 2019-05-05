@@ -1,0 +1,15 @@
+init:
+  js:
+    assets/init.js: {}
+  dependencies:
+    - core/drupal
+    - core/drupalSettings
+    - editorjs/editorjs
+
+editorjs:
+  js:
+    assets/editor.js: {}
+    assets/header.js: {}
+
+
+

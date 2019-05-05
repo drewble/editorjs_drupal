@@ -1,0 +1,7 @@
+editorjs.settings:
+  path: '/admin/config/system/editorjs.settings'
+  defaults:
+    _title: 'Editor.js settings'
+    _form: 'Drupal\editorjs\Form\SettingsForm'
+  requirements:
+    _permission: 'administer site configuration'
