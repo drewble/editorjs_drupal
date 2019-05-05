@@ -81,6 +81,14 @@ class EditorJsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
 
   }
 
+  /**
+   * @param \Drupal\Core\Field\FieldItemListInterface $items
+   * @param array $form
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *
+   * @return array|mixed
+   * @throws \Drupal\Component\Plugin\Exception\PluginException
+   */
   public function formMultipleElements(FieldItemListInterface $items, array &$form, FormStateInterface $form_state) {
     $values = [];
     $elements['editorjs'] = [
@@ -116,6 +124,12 @@ class EditorJsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
     return $elements;
   }
 
+  /**
+   * @param array $elements
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   * @param array $form
+   * @throws \Drupal\Component\Plugin\Exception\PluginException
+   */
   public function elementValidate(array $elements, FormStateInterface $form_state, array $form) {
 
     $blocks = Json::decode($elements['#value']);
@@ -133,7 +147,7 @@ class EditorJsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
    * Prepare data. Create|edit and return paragraph.
    *
    * @param $block
-   * @return bool
+   * @return bool|ParagraphInterface
    * @throws \Drupal\Component\Plugin\Exception\PluginException
    */
   protected function prepareEntity($block) {
@@ -141,7 +155,13 @@ class EditorJsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
       ->editorjsPluginManager
       ->getInstanceByPluginType($block['type']);
     if ($plugin_instance instanceof EditorjsInterface) {
-      $paragraph = $plugin_instance->createParagraph();
+      $paragraph = $this
+        ->entityTypeManager
+        ->getStorage('paragraph')
+        ->load($block['data']['pid']);
+      if (!($paragraph instanceof ParagraphInterface)) {
+        $paragraph = $plugin_instance->createParagraph();
+      }
       $plugin_instance->setValues($paragraph, $block['data']);
       return $paragraph;
     }
