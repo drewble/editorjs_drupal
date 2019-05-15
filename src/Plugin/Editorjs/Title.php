@@ -37,15 +37,6 @@ class Title extends EditorjsPluginBase {
     return $output;
   }
 
-  public function createParagraph() {
-    return $this
-      ->entityTypeManager
-      ->getStorage('paragraph')
-      ->create([
-        'type' => $this->getParagraphType(),
-      ]);
-  }
-
   public function setValues(ParagraphInterface $paragraph, $new_values) {
     $paragraph
       ->set('editorjs_text_plain', $new_values['text'])

@@ -55,12 +55,20 @@ abstract class EditorjsPluginBase extends PluginBase implements EditorjsInterfac
     return (string) $this->pluginDefinition['plugin_type'];
   }
 
+  public function createParagraph() {
+    return $this
+      ->entityTypeManager
+      ->getStorage('paragraph')
+      ->create([
+        'type' => $this->getParagraphType(),
+      ]);
+  }
+
   public function getData(ParagraphInterface $paragraph) {
     return [
       'type' => $this->getPluginType(),
       'data' => [
         'pid' => $paragraph->id(),
-        'type' => $paragraph->bundle(),
       ],
     ];
   }

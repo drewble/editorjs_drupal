@@ -5,6 +5,7 @@ namespace Drupal\editorjs\Plugin\Field\FieldWidget;
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
@@ -140,11 +141,11 @@ class EditorJsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
     $field_name = $this->fieldDefinition->getName();
 
     // Remove paragraphs.
-    /** @var EntityInterface $entity */
     $entity = $form_state
       ->getFormObject()
       ->getEntity();
-    if (!$entity->get($field_name)->isEmpty()) {
+
+    if ($entity instanceof FieldableEntityInterface && !$entity->get($field_name)->isEmpty()) {
       /** @var ParagraphInterface $paragraph */
       foreach ($entity->get($field_name)->referencedEntities() as $paragraph) {
         if ($this->isRemove($paragraph->id(), $blocks)) {

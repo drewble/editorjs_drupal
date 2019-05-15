@@ -15,7 +15,8 @@
       }
 
       let data = data_element.value;
-      let newHeader = this.getPlugin(Header);
+      let newHeader = this.getPlugin(Header, 'header');
+      let newPagaraph = this.getPlugin(Paragraph, 'paragraph_default');
       const editor = new EditorJS({
         holder: 'editorjs',
         autofocus: true,
@@ -26,7 +27,16 @@
               placeholder: Drupal.t('Enter a header')
             }
           },
+          paragraph_default: {
+            class: newPagaraph,
+            inlineToolbar: true,
+          },
+          list: {
+            class: this.getPlugin(List, 'list'),
+            inlineToolbar: true,
+          },
         },
+        initialBlock: 'paragraph_default',
         data: {
           blocks: JSON.parse(data)
         },
@@ -37,16 +47,29 @@
         }
       });
     },
-    getPlugin: function (plugin) {
+    getPlugin: function (plugin, plugin_type) {
       let plugin_wrapper = plugin;
       plugin_wrapper.prototype.save = function (toolsContent) {
-        return {
-          text: toolsContent.innerHTML,
-          level: this.currentLevel.number,
-          pid: this.data.pid || 'new',
-          type: this.data.type || 'header'
+        let output = {
+          pid: this.data.pid || 'new'
         };
+        if (plugin_type === 'header') {
+          output.text = toolsContent.innerHTML;
+          output.level = this.currentLevel.number;
+        }
+
+        if (plugin_type === 'paragraph_default') {
+          output.text = toolsContent.innerHTML;
+        }
+
+        if (plugin_type === 'list') {
+          output.style = this.data.style;
+          output.items = this.data.items;
+        }
+
+        return output;
       };
+
       return plugin_wrapper;
     }
   }
