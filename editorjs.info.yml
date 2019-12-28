@@ -1,7 +1,5 @@
-name: Editor.js for paragraph
+name: Editorjs
 type: module
 description: The description.
 package: Custom
 core: 8.x
-dependencies:
-  - paragraphs:paragraphs

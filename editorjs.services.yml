@@ -1,4 +1,4 @@
 services:
-  plugin.manager.editorjs:
-    class: Drupal\editorjs\EditorjsPluginManager
+  plugin.manager.editorjs_plugin:
+    class: Drupal\editorjs\EditorJsPluginManager
     parent: default_plugin_manager

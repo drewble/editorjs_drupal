@@ -9,9 +9,12 @@ init:
 editorjs:
   js:
     assets/editor.js: {}
-    assets/header.js: {}
-    assets/paragraph.js: {}
-    assets/list.js: {}
+
+#plugins:
+#  js:
+#    assets/plugins/header.js: {}
+#    assets/plugins/paragraph.js: {}
+#    assets/plugins/list.js: {}
 
 
 
