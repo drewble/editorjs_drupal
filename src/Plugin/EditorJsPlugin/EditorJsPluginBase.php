@@ -23,9 +23,10 @@ abstract class EditorJsPluginBase extends PluginBase implements EditorJsPluginIn
         '#data' => $data,
         '#attached' => [
           'library' => $this->getLibraries(),
-        ]
+        ],
       ];
     }
+
     return [];
   }
 
