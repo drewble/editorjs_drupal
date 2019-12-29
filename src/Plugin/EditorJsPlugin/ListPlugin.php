@@ -8,21 +8,21 @@ use Drupal\editorjs\Annotation\EditorJsPlugin;
  * Defines Header plugin.
  *
  * @EditorJsPlugin(
- *   id = "header",
- *   template = "editor_js_header",
+ *   id = "list",
+ *   template = "editor_js_list",
  *   settings = {
- *     "class" = "Header",
+ *     "class" = "List",
  *     "inlineToolbar" = true
  *   }
  * )
  */
-class Header extends EditorJsPluginBase {
+class ListPlugin extends EditorJsPluginBase {
 
   /**
    * {@inheritdoc}
    */
   public function getFile() {
-    return drupal_get_path('module', 'editorjs'). '/assets/plugins/header.js';
+    return drupal_get_path('module', 'editorjs'). '/assets/plugins/list.js';
   }
 
 }

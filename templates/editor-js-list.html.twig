@@ -1,0 +1,6 @@
+{% set list = style == 'unordered' ? 'ul' : 'ol' %}
+<{{list}}>
+  {% for item in items %}
+    <li>item</li>
+  {% endfor %}
+</{{list}}>

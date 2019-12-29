@@ -64,6 +64,14 @@ class EditorJsFilter extends FilterBase implements ContainerFactoryPluginInterfa
     $this->logger = $logger;
   }
 
+  /**
+   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+   * @param array $configuration
+   * @param string $plugin_id
+   * @param mixed $plugin_definition
+   *
+   * @return \Drupal\Core\Plugin\ContainerFactoryPluginInterface|static
+   */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
       $configuration,
@@ -99,6 +107,7 @@ class EditorJsFilter extends FilterBase implements ContainerFactoryPluginInterfa
       $instance = $this->pluginManager->createInstance($block['type']);
       $output[] = $instance->build($block['data']);
     }
+
     return new FilterProcessResult($this->renderer->render($output));
   }
 
