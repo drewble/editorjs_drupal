@@ -128,7 +128,9 @@ class EditorJs extends EditorBase implements ContainerFactoryPluginInterface {
   protected function getOptions() {
     $options = [];
     foreach ($this->editorJsManager->getDefinitions() as $plugin_id => $def) {
-      $options[$plugin_id] = $def['label'];
+      if (isset($def['settings']['class'])) {
+        $options[$plugin_id] = $def['settings']['class'];
+      }
     }
 
     return $options;

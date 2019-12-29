@@ -2,7 +2,6 @@
 
 namespace Drupal\editorjs\Plugin\EditorJsPlugin;
 
-use Drupal\Core\Annotation\Translation;
 use Drupal\editorjs\Annotation\EditorJsPlugin;
 
 /**
@@ -10,6 +9,7 @@ use Drupal\editorjs\Annotation\EditorJsPlugin;
  *
  * @EditorJsPlugin(
  *   id = "header",
+ *   template = "editor_js_header",
  *   settings = {
  *     "class" = "Header",
  *     "inlineToolbar" = true

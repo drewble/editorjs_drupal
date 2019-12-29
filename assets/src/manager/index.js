@@ -49,6 +49,12 @@ export default {
     })
   },
 
+  /**
+   * Convert source value to editorJs data.
+   *
+   * @param {string} source
+   * @returns {{data: {text: *}, type: string}[]|any}
+   */
   getBlocks: function (source) {
     try {
       return JSON.parse(source);

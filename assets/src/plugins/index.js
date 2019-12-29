@@ -18,6 +18,7 @@ export default {
     this.count = paths.length;
     for (let i = 0; i < paths.length; i++) {
       this.attach(`/${paths[i]}`, () => {
+        // Call function after include plugins.
         if (this.count > 1) {
           this.count--;
         } else {
@@ -50,5 +51,6 @@ export default {
    */
   onError: function (e) {
     throw new URIError("The script " + e.target.src + " didn't load correctly.");
-  },
+  }
+
 }

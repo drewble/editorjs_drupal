@@ -13,4 +13,26 @@ abstract class EditorJsPluginBase extends PluginBase implements EditorJsPluginIn
     return $this->pluginDefinition['settings'];
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function build($data) {
+    if ($template = $this->getTemplate()) {
+      return [
+        '#theme' => $template,
+        '#data' => $data,
+      ];
+    }
+    return [];
+  }
+
+  /**
+   * Returns plugin template name or false.
+   *
+   * @return bool|mixed
+   */
+  public function getTemplate() {
+    return isset($this->pluginDefinition['template']) ? $this->pluginDefinition['template'] : FALSE;
+  }
+
 }

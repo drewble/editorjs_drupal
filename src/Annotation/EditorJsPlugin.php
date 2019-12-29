@@ -25,4 +25,11 @@ class EditorJsPlugin extends Plugin {
    */
   public $settings;
 
+  /**
+   * The plugin template name.
+   *
+   * @var string
+   */
+  public $template;
+
 }

@@ -18,4 +18,11 @@ interface EditorJsPluginInterface {
    */
   public function getFile();
 
+  /**
+   * Returns build renderable.
+   *
+   * @return array
+   */
+  public function build($data);
+
 }
