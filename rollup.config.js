@@ -50,5 +50,5 @@ const entry = (input, output) => {
 
 // Return entries
 export default [
-  entry('assets/src/index.js', 'assets/init.js'),
+  entry('assets/js/src/index.js', 'assets/js/init.js'),
 ];

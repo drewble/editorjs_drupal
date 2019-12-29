@@ -1,5 +1,0 @@
-editorjs.settings:
-  title: Editor.js settings
-  parent: system.admin_config_system
-  route_name: editorjs.settings
-  weight: 10

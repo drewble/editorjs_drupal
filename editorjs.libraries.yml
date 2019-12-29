@@ -1,6 +1,6 @@
 init:
   js:
-    assets/init.js: {}
+    assets/js/init.js: {}
   dependencies:
     - core/drupal
     - core/drupalSettings
@@ -8,13 +8,12 @@ init:
 
 editorjs:
   js:
-    assets/editor.js: {}
+    assets/js/editor.js: {}
 
-#plugins:
-#  js:
-#    assets/plugins/header.js: {}
-#    assets/plugins/paragraph.js: {}
-#    assets/plugins/list.js: {}
+plugins.link:
+  css:
+    component:
+      assets/css/link_tool.css: {}
 
 
 

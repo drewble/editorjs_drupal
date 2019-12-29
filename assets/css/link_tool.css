@@ -1,0 +1,45 @@
+.link-tool {
+  position: relative;
+}
+.link-tool__content {
+  display: block;
+  padding: 25px;
+  color: initial;
+  text-decoration: none;
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid rgba(201, 201, 204, 0.48);
+  box-shadow: 0 1px 3px rgba(0,0,0, .1);
+  border-radius: 6px;
+  will-change: filter;
+}
+.link-tool__image {
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin: 0 0 0 30px;
+  width: 65px;
+  height: 65px;
+  border-radius: 3px;
+  float: right;
+}
+.link-tool__title {
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.5em;
+  margin: 0 0 10px 0;
+}
+.link-tool__description {
+  margin: 0 0 20px 0;
+  font-size: 15px;
+  line-height: 1.55em;
+  overflow: hidden;
+}
+.link-tool__anchor {
+  display: block;
+  font-size: 15px;
+  line-height: 1em;
+  color: #888 !important;
+  border: 0 !important;
+  padding: 0 !important;
+}

@@ -22,7 +22,7 @@ class HeaderPlugin extends EditorJsPluginBase {
    * {@inheritdoc}
    */
   public function getFile() {
-    return drupal_get_path('module', 'editorjs'). '/assets/plugins/header.js';
+    return drupal_get_path('module', 'editorjs'). '/assets/js/plugins/header.js';
   }
 
 }

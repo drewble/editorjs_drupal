@@ -1,7 +1,6 @@
-editorjs.settings:
-  path: '/admin/config/system/editorjs.settings'
+editorjs.link_fetch:
+  path: '/admin/editorjs/link/fetch'
   defaults:
-    _title: 'Editor.js settings'
-    _form: 'Drupal\editorjs\Form\SettingsForm'
+    _controller: '\Drupal\editorjs\Controller\Link\FetchLinkController::fetch'
   requirements:
-    _permission: 'administer site configuration'
+    _permission: 'administer'

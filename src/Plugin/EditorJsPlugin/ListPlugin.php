@@ -22,7 +22,7 @@ class ListPlugin extends EditorJsPluginBase {
    * {@inheritdoc}
    */
   public function getFile() {
-    return drupal_get_path('module', 'editorjs'). '/assets/plugins/list.js';
+    return drupal_get_path('module', 'editorjs'). '/assets/js/plugins/list.js';
   }
 
 }

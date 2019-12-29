@@ -25,4 +25,17 @@ interface EditorJsPluginInterface {
    */
   public function build($data);
 
+  /**
+   * Returns plugin template name or false.
+   *
+   * @return bool|mixed
+   */
+  public function getTemplate();
+
+  /**
+   * Returns dependency libraries.
+   *
+   * @return array
+   */
+  public function getLibraries();
 }
