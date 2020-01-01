@@ -3,6 +3,7 @@
 namespace Drupal\editorjs\Plugin\Editor;
 
 use Drupal\Component\Serialization\Json;
+use Drupal\Core\Annotation\Translation;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\editor\Entity\Editor;

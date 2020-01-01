@@ -5,7 +5,7 @@ namespace Drupal\editorjs\Plugin\EditorJsPlugin;
 use Drupal\editorjs\Annotation\EditorJsPlugin;
 
 /**
- * Defines Header plugin.
+ * Defines LinkTool plugin.
  *
  * @EditorJsPlugin(
  *   id = "linkTool",

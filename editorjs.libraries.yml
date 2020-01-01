@@ -15,5 +15,8 @@ plugins.link:
     component:
       assets/css/link_tool.css: {}
 
-
+plugins.checklist:
+  css:
+    component:
+      assets/css/checklist.css: {}
 

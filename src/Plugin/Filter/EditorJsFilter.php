@@ -89,6 +89,9 @@ class EditorJsFilter extends FilterBase implements ContainerFactoryPluginInterfa
   public function process($text, $langcode) {
     $output = [];
     $blocks = Json::decode($text);
+    if (!is_array($blocks)) {
+      return new FilterProcessResult($text);
+    }
     foreach ($blocks as $block) {
       if ($block['type'] == 'paragraph') {
         $output[] = [
