@@ -27,7 +27,7 @@ abstract class EditorJsPluginBase extends PluginBase implements EditorJsPluginIn
       ];
     }
 
-    return [];
+    return ['#markup' => $data];
   }
 
   /**

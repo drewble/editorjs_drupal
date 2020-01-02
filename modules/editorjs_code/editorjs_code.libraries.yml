@@ -1,0 +1,6 @@
+highlight:
+  css:
+    component:
+      assets/highlight/default.css: {}
+  js:
+    assets/highlight/highlight.pack.js: {}

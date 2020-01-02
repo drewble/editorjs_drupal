@@ -7,11 +7,13 @@ use Drupal\Core\Annotation\Translation;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\editorjs\EditorJsPluginManager;
+use Drupal\editorjs\Event\EdirorJsEvent;
 use Drupal\filter\Annotation\Filter;
 use Drupal\filter\FilterProcessResult;
 use Drupal\filter\Plugin\FilterBase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Provides a 'EditorJs Filter' filter.
@@ -25,6 +27,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * )
  */
 class EditorJsFilter extends FilterBase implements ContainerFactoryPluginInterface {
+
+  /**
+   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   */
+  protected $eventDispatcher;
 
   /**
    * @var \Drupal\Core\Render\RendererInterface
@@ -47,18 +54,22 @@ class EditorJsFilter extends FilterBase implements ContainerFactoryPluginInterfa
    * @param array $configuration
    * @param $plugin_id
    * @param $plugin_definition
+   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
    * @param \Drupal\Core\Render\RendererInterface $renderer
    * @param \Drupal\editorjs\EditorJsPluginManager $pluginManager
+   * @param \Psr\Log\LoggerInterface $logger
    */
   public function __construct(
     array $configuration,
     $plugin_id,
     $plugin_definition,
+    EventDispatcherInterface $eventDispatcher,
     RendererInterface $renderer,
     EditorJsPluginManager $pluginManager,
     LoggerInterface $logger
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->eventDispatcher = $eventDispatcher;
     $this->renderer = $renderer;
     $this->pluginManager = $pluginManager;
     $this->logger = $logger;
@@ -77,6 +88,7 @@ class EditorJsFilter extends FilterBase implements ContainerFactoryPluginInterfa
       $configuration,
       $plugin_id,
       $plugin_definition,
+      $container->get('event_dispatcher'),
       $container->get('renderer'),
       $container->get('plugin.manager.editorjs_plugin'),
       $container->get('logger.factory')->get('EditorJs')
@@ -94,11 +106,11 @@ class EditorJsFilter extends FilterBase implements ContainerFactoryPluginInterfa
     }
     foreach ($blocks as $block) {
       if ($block['type'] == 'paragraph') {
-        $output[] = [
-          '#theme' => 'editor_js_paragraph',
-          '#data' => $block['data'],
-        ];
-        continue;
+        $output[] = $this
+          ->eventDispatchBuild($block, [
+            '#theme' => 'editor_js_paragraph',
+            '#data' => $block['data'],
+          ]);
       }
 
       if (!$this->pluginManager->hasDefinition($block['type'])) {
@@ -108,10 +120,17 @@ class EditorJsFilter extends FilterBase implements ContainerFactoryPluginInterfa
 
       /** @var \Drupal\editorjs\Plugin\EditorJsPlugin\EditorJsPluginInterface $instance */
       $instance = $this->pluginManager->createInstance($block['type']);
-      $output[] = $instance->build($block['data']);
+      $output[] = $this->eventDispatchBuild($block, $instance->build($block['data']));
     }
 
     return new FilterProcessResult($this->renderer->render($output));
+  }
+
+  protected function eventDispatchBuild($block, $build) {
+    return ($this
+      ->eventDispatcher
+      ->dispatch(EdirorJsEvent::BUILD, new EdirorJsEvent($block, $build)))
+      ->getBuild();
   }
 
 }

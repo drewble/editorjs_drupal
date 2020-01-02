@@ -23,9 +23,10 @@ function editorjs_theme($existing, $type, $theme, $path) {
   /** @var \Drupal\editorjs\EditorJsPluginManager $manager */
   $manager = \Drupal::service('plugin.manager.editorjs_plugin');
   foreach ($manager->getDefinitions() as $def) {
-    if (isset($def['template']) && !empty($def['template'])){
+    if (isset($def['template']) && !empty($def['template'])) {
       $hooks[$def['template']] = [
         'base hook' => 'editor_js_base',
+        'path' => drupal_get_path('module', $def['provider']) . '/templates',
       ];
     }
   }
