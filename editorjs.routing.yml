@@ -1,6 +1,20 @@
-editorjs.link_fetch:
-  path: '/admin/editorjs/link/fetch'
+editorjs.image.upload:
+  path: '/admin/editorjs/upload'
   defaults:
-    _controller: '\Drupal\editorjs\Controller\Link\FetchLinkController::fetch'
+    _controller: '\Drupal\editorjs\Controller\ImageController::upload'
+  requirements:
+    _permission: 'administer'
+
+editorjs.image.fetch:
+  path: '/admin/editorjs/fetch'
+  defaults:
+    _controller: '\Drupal\editorjs\Controller\ImageController::fetch'
+  requirements:
+    _permission: 'administer'
+
+editorjs.link:
+  path: '/admin/editorjs/link'
+  defaults:
+    _controller: '\Drupal\editorjs\Controller\LinkController::fetch'
   requirements:
     _permission: 'administer'

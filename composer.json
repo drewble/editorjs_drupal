@@ -1,6 +1,9 @@
 {
-  "name": "drupal/paragraph_editor",
-  "type": "drupal-module",
-  "description": "",
-  "keywords": ["Drupal", "EditorJS"]
+    "name": "drupal/paragraph_editor",
+    "type": "drupal-module",
+    "description": "",
+    "keywords": ["Drupal", "EditorJS"],
+    "require": {
+        "ext-dom": "*"
+    }
 }

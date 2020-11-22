@@ -1,4 +1,6 @@
 services:
-  plugin.manager.editorjs_plugin:
-    class: Drupal\editorjs\EditorJsPluginManager
-    parent: default_plugin_manager
+  editorjs.event_subscriber:
+    class: Drupal\editorjs\EventSubscriber\EditorjsSubscriber
+    arguments: ['@http_client']
+    tags:
+      - { name: event_subscriber }
