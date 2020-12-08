@@ -25,7 +25,10 @@ class EditorjsWidget extends WidgetBase {
     $element['value'] = $element + [
       '#type' => 'hidden',
       '#default_value' => $items[$delta]->value ?? '',
-      '#attached' => ['library' => ['editorjs/init']],
+      '#attached' => [
+        'library' => ['editorjs/init'],
+        'drupalSettings' => ['editorjs' => [$items->getName() => $items->getSettings()]],
+      ],
       '#attributes' => [
         'class' => ['editorjs'],
       ],
