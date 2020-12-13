@@ -4,3 +4,7 @@ services:
     arguments: ['@http_client']
     tags:
       - { name: event_subscriber }
+
+  plugin.manager.editorjs_tools:
+    class: Drupal\editorjs\EditorJsToolsPluginManager
+    parent: default_plugin_manager

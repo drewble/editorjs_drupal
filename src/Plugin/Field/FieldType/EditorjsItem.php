@@ -18,7 +18,7 @@ use Drupal\file\Plugin\Field\FieldType\FileItem;
  *   category = @Translation("General"),
  *   default_widget = "editorjs",
  *   default_formatter = "string",
- *   cardinality=1
+ *   cardinality = 1
  * )
  */
 class EditorjsItem extends MapItem {
@@ -28,45 +28,73 @@ class EditorjsItem extends MapItem {
    */
   public static function defaultFieldSettings() {
     return [
-      'image' => [
-        'enable' => TRUE,
-        'file_extensions' => 'png gif jpg jpeg',
-        'max_filesize' => '',
-      ],
-    ] + parent::defaultFieldSettings();
+      'tools' => [],
+    ];
   }
 
   /**
    * {@inheritdoc}
    */
   public function fieldSettingsForm(array $form, FormStateInterface $form_state) {
+    $elements['tools'] = [
+      '#type' => 'container',
+    ];
     $settings = $this->getSettings();
 
-    $element['image']['enable'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Image plugin'),
-      '#default_value' => $settings['image']['enable'],
-    ];
+    /** @var \Drupal\editorjs\EditorJsToolsPluginManager $manager */
+    $manager = \Drupal::service('plugin.manager.editorjs_tools');
 
-    $element['image']['file_extensions'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Allowed file extensions'),
-      '#default_value' => $settings['image']['file_extensions'],
-      '#description' => $this->t('Separate extensions with a space or comma and do not include the leading dot.'),
-      '#element_validate' => [[FileItem::class, 'validateExtensions']],
-      '#weight' => 1,
-      '#maxlength' => 256,
-      '#states' => [
-        'visible' => [
-          ':input[name="settings[image][enable]"]' => ['checked' => TRUE],
+    foreach (array_keys($manager->getDefinitions()) as $plugin_id) {
+      $tool_settings = $settings['tools'][$plugin_id] ?? [];
+      /** @var \Drupal\editorjs\EditorJsToolsInterface $instance */
+      $instance = $manager->createInstance($plugin_id);
+      $elements['tools'][$plugin_id]['enable'] = [
+        '#type' => 'checkbox',
+        '#title' => $instance->label(),
+        '#description' => $instance->description(),
+        '#default_value' => $tool_settings['enable'] ?? FALSE,
+      ];
+      $elements['tools'][$plugin_id]['settings'] = [
+        '#type' => 'details',
+        '#title' => $this->t('Settings'),
+        '#states' => [
+          'visible' => [
+            ':input[name="settings[tools][' . $plugin_id . '][enable]"]' => ['checked' => TRUE],
+          ],
         ],
-        'required' => [
-          ':input[name="settings[image][enable]"]' => ['checked' => TRUE],
-        ],
-      ],
-    ];
+      ];
 
-    return $element;
+      $settings_elements = $instance->settingsForm($tool_settings['settings'] ?? []);
+      $elements['tools'][$plugin_id]['settings'] += $settings_elements;
+      if (empty($settings_elements)) {
+        $elements['tools'][$plugin_id]['settings']['#access'] = FALSE;
+      }
+    }
+    //$element['image']['enable'] = [
+    //  '#type' => 'checkbox',
+    //  '#title' => $this->t('Image plugin'),
+    //  '#default_value' => $settings['image']['enable'],
+    //];
+    //
+    //$element['image']['file_extensions'] = [
+    //  '#type' => 'textfield',
+    //  '#title' => $this->t('Allowed file extensions'),
+    //  '#default_value' => $settings['image']['file_extensions'],
+    //  '#description' => $this->t('Separate extensions with a space or comma and do not include the leading dot.'),
+    //  '#element_validate' => [[FileItem::class, 'validateExtensions']],
+    //  '#weight' => 1,
+    //  '#maxlength' => 256,
+    //  '#states' => [
+    //    'visible' => [
+    //      ':input[name="settings[image][enable]"]' => ['checked' => TRUE],
+    //    ],
+    //    'required' => [
+    //      ':input[name="settings[image][enable]"]' => ['checked' => TRUE],
+    //    ],
+    //  ],
+    //];
+
+    return $elements;
   }
 
   /**
