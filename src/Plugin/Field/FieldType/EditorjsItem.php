@@ -26,50 +26,42 @@ class EditorjsItem extends MapItem {
   /**
    * {@inheritdoc}
    */
-  public static function defaultFieldSettings() {
-    return [
-      'tools' => [],
-    ];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function fieldSettingsForm(array $form, FormStateInterface $form_state) {
-    $elements['tools'] = [
-      '#type' => 'container',
-    ];
-    $settings = $this->getSettings();
-
-    /** @var \Drupal\editorjs\EditorJsToolsPluginManager $manager */
-    $manager = \Drupal::service('plugin.manager.editorjs_tools');
-
-    foreach (array_keys($manager->getDefinitions()) as $plugin_id) {
-      $tool_settings = $settings['tools'][$plugin_id] ?? [];
-      /** @var \Drupal\editorjs\EditorJsToolsInterface $instance */
-      $instance = $manager->createInstance($plugin_id);
-      $elements['tools'][$plugin_id]['enable'] = [
-        '#type' => 'checkbox',
-        '#title' => $instance->label(),
-        '#description' => $instance->description(),
-        '#default_value' => $tool_settings['enable'] ?? FALSE,
-      ];
-      $elements['tools'][$plugin_id]['settings'] = [
-        '#type' => 'details',
-        '#title' => $this->t('Settings'),
-        '#states' => [
-          'visible' => [
-            ':input[name="settings[tools][' . $plugin_id . '][enable]"]' => ['checked' => TRUE],
-          ],
-        ],
-      ];
-
-      $settings_elements = $instance->settingsForm($tool_settings['settings'] ?? []);
-      $elements['tools'][$plugin_id]['settings'] += $settings_elements;
-      if (empty($settings_elements)) {
-        $elements['tools'][$plugin_id]['settings']['#access'] = FALSE;
-      }
-    }
+  //public function fieldSettingsForm(array $form, FormStateInterface $form_state) {
+  //  $elements['tools'] = [
+  //    '#type' => 'container',
+  //  ];
+  //  $settings = $this->getSettings();
+  //
+  //  /** @var \Drupal\editorjs\EditorJsToolsPluginManager $manager */
+  //  $manager = \Drupal::service('plugin.manager.editorjs_tools');
+  //
+  //  foreach (array_keys($manager->getDefinitions()) as $plugin_id) {
+  //    $tool_settings = $settings['tools'][$plugin_id] ?? [];
+  //    /** @var \Drupal\editorjs\EditorJsToolsInterface $instance */
+  //    $instance = $manager->createInstance($plugin_id);
+  //    $elements['tools'][$plugin_id]['enable'] = [
+  //      '#type' => 'checkbox',
+  //      '#title' => $instance->label(),
+  //      '#description' => $instance->description(),
+  //      '#default_value' => $tool_settings['enable'] ?? FALSE,
+  //    ];
+  //    $elements['tools'][$plugin_id]['settings'] = [
+  //      '#type' => 'details',
+  //      '#title' => $this->t('Settings'),
+  //      '#states' => [
+  //        'visible' => [
+  //          ':input[name="settings[tools][' . $plugin_id . '][enable]"]' => ['checked' => TRUE],
+  //        ],
+  //      ],
+  //    ];
+  //
+  //    $settings_elements = $instance->settingsForm($tool_settings['settings'] ?? []);
+  //    $elements['tools'][$plugin_id]['settings'] += $settings_elements;
+  //    if (empty($settings_elements)) {
+  //      $elements['tools'][$plugin_id]['settings']['#access'] = FALSE;
+  //    }
+  //  }
+    // @todo add settings to image tool plugin.
     //$element['image']['enable'] = [
     //  '#type' => 'checkbox',
     //  '#title' => $this->t('Image plugin'),
@@ -94,8 +86,8 @@ class EditorjsItem extends MapItem {
     //  ],
     //];
 
-    return $elements;
-  }
+  //  return $elements;
+  //}
 
   /**
    * {@inheritdoc}

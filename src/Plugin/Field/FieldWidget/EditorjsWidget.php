@@ -38,9 +38,58 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
   /**
    * {@inheritdoc}
    */
-  public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
-    $settings = $this->prepareSettings($items->getSettings());
+  public static function defaultSettings() {
+    return [
+      'tools' => [],
+    ] + parent::defaultSettings();
+  }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function settingsForm(array $form, FormStateInterface $form_state) {
+    $element['tools'] = [
+      '#type' => 'container',
+    ];
+
+    $settings = $this->getSettings();
+    foreach (array_keys($this->toolsManager->getDefinitions()) as $plugin_id) {
+      $tool_settings = $settings['tools'][$plugin_id] ?? [];
+      /** @var \Drupal\editorjs\EditorJsToolsInterface $instance */
+      $instance = $this->toolsManager->createInstance($plugin_id);
+      $element['tools'][$plugin_id]['enable'] = [
+        '#type' => 'checkbox',
+        '#title' => $instance->label(),
+        '#description' => $instance->description(),
+        '#default_value' => $tool_settings['enable'] ?? FALSE,
+      ];
+      $visible_name = "fields[{$this->fieldDefinition->getName()}][settings_edit_form][settings][tools][{$plugin_id}][enable]";
+      $element['tools'][$plugin_id]['settings'] = [
+        '#type' => 'details',
+        '#title' => $this->t('Settings'),
+        '#states' => [
+          'visible' => [
+            ':input[name="' . $visible_name . '"]' => ['checked' => TRUE],
+          ],
+        ],
+      ];
+
+      $settings_elements = $instance->settingsForm($tool_settings['settings'] ?? []);
+      $element['tools'][$plugin_id]['settings'] += $settings_elements;
+      if (empty($settings_elements)) {
+        $element['tools'][$plugin_id]['settings']['#access'] = FALSE;
+      }
+    }
+
+    return $element;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
+    $settings = $this->prepareSettings($this->getSettings());
+    dump($settings);
     $element['value'] = $element + [
       '#type' => 'hidden',
       '#default_value' => $items[$delta]->value ?? '',
@@ -79,7 +128,9 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
           'class' => $instance->implementer(),
           'class_file' => $instance->getFile(),
         ];
+        continue;
       }
+      unset($settings['tools'][$plugin_id]);
     }
 
     return $settings;

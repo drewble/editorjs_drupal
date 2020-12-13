@@ -1,6 +1,0 @@
-name: editorjs_code
-type: module
-description: This module provider Code tool for EditorJs editor.
-package: Custom
-core: 8.x
-core_version_requirement: ^8 || ^9
