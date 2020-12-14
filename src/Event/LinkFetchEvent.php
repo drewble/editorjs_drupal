@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Drupal\editorjs\Event;
 
 use Symfony\Component\EventDispatcher\Event;
@@ -9,11 +8,6 @@ use Symfony\Component\EventDispatcher\Event;
  * Defines event fetch metadata for linkTool.
  */
 class LinkFetchEvent extends Event {
-
-  /**
-   * The event name.
-   */
-  public const NAME = 'editorjs.link_fetch';
 
   /**
    * The input url.

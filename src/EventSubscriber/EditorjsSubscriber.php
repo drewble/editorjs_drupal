@@ -2,8 +2,13 @@
 
 namespace Drupal\editorjs\EventSubscriber;
 
+use Drupal\Component\Utility\DiffArray;
 use Drupal\Component\Utility\Html;
+use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\editorjs\Event\EditorJsEvents;
+use Drupal\editorjs\Event\FormSubmitEvent;
 use Drupal\editorjs\Event\LinkFetchEvent;
+use Drupal\file\Entity\File;
 use GuzzleHttp\ClientInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -20,13 +25,21 @@ class EditorjsSubscriber implements EventSubscriberInterface {
   protected $client;
 
   /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManager
+   */
+  protected $entityTypeManager;
+
+  /**
    * EditorjsSubscriber constructor.
    *
    * @param \GuzzleHttp\ClientInterface $client
    *   The http client.
    */
-  public function __construct(ClientInterface $client) {
+  public function __construct(ClientInterface $client, EntityTypeManager $entityTypeManager) {
     $this->client = $client;
+    $this->entityTypeManager = $entityTypeManager;
   }
 
   /**
@@ -34,8 +47,41 @@ class EditorjsSubscriber implements EventSubscriberInterface {
    */
   public static function getSubscribedEvents() {
     return [
-      LinkFetchEvent::NAME => 'linkFetch',
+      EditorJsEvents::LINK_FETCH => 'linkFetch',
+      EditorJsEvents::FORM_SUBMIT => 'processDifferenceValues',
     ];
+  }
+
+
+  /**
+   * Processing difference values.
+   *
+   * @param \Drupal\editorjs\Event\FormSubmitEvent $event
+   *   The event instance.
+   */
+  public function processDifferenceValues(FormSubmitEvent $event) {
+    $diff = DiffArray::diffAssocRecursive($event->getOriginValue(), $event->getNewValue());
+    if (empty($diff)) {
+      return;
+    }
+
+    foreach ($diff as $diff_item) {
+      if (isset($diff_item['type']) && $diff_item['type'] === 'image') {
+        $fid = $diff_item['data']['file']['id'] ?? NULL;
+        // Skip if file id not found.
+        if (empty($fid)) {
+          return;
+        }
+        // Change status to temporary.
+        /** @var \Drupal\file\Entity\File $file */
+        $file = $this->entityTypeManager->getStorage('file')->load($fid);
+        if ($file) {
+          $file->setTemporary();
+          $file->save();
+        }
+      }
+    }
+
   }
 
   /**

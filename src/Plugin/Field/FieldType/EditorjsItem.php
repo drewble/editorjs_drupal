@@ -66,8 +66,8 @@ class EditorjsItem extends MapItem {
   /**
    * {@inheritdoc}
    */
-  public function preSave() {
-    parent::preSave();
+  public function postSave($update) {
+    parent::postSave($update);
   }
 
 }

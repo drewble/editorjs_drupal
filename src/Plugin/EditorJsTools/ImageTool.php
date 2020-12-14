@@ -3,6 +3,7 @@
 namespace Drupal\editorjs\Plugin\EditorjsTools;
 
 use Drupal\editorjs\EditorJsToolsPluginBase;
+use Drupal\file\Entity\File;
 
 /**
  * Plugin implementation of the editorjs_tools.
@@ -37,13 +38,6 @@ class ImageTool extends EditorJsToolsPluginBase {
     ];
 
     return $elements;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function processValueDifference($diff_value) {
-    dump($diff_value);
   }
 
   /**

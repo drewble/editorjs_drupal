@@ -63,16 +63,4 @@ interface EditorJsToolsInterface {
    */
   public function prepareSettings(array $settings);
 
-  /**
-   * This method is called from massage form value.
-   *
-   * For instance this is the proper phase for remove deprecated entities.
-   *
-   * @param mixed $diff_value
-   *   The difference value.
-   *
-   * @see \Drupal\editorjs\Plugin\Field\FieldWidget\EditorjsWidget::massageFormValues
-   */
-  public function processValueDifference($diff_value);
-
 }

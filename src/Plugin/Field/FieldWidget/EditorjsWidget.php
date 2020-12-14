@@ -8,6 +8,8 @@ use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\editorjs\Event\EditorJsEvents;
+use Drupal\editorjs\Event\FormSubmitEvent;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -29,11 +31,19 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
   protected $toolsManager;
 
   /**
+   * The event dispatcher.
+   *
+   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   */
+  protected $dispatcher;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     $instance = parent::create($container, $configuration, $plugin_id, $plugin_definition);
     $instance->toolsManager = $container->get('plugin.manager.editorjs_tools');
+    $instance->dispatcher = $container->get('event_dispatcher');
     return $instance;
   }
 
@@ -150,19 +160,9 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
       $origin_value = $form_state->get($this->fieldDefinition->getName() . ':' . $origin_delta);
       $origin_value = Json::decode($origin_value ?? '');
 
-      $diff = DiffArray::diffAssocRecursive($origin_value, $value);
-      // Skip if don't difference.
-      if (empty($diff)) {
-        continue;
-      }
-
-      foreach ($diff as $diff_item) {
-        if (!empty($diff_item['type'])) {
-          /** @var \Drupal\editorjs\EditorJsToolsInterface $instance */
-          $instance = $this->toolsManager->createInstance($diff_item['type']);
-          $instance->processValueDifference($diff_item);
-        }
-      }
+      $this
+        ->dispatcher
+        ->dispatch(EditorJsEvents::FORM_SUBMIT, new FormSubmitEvent($value, $origin_value));
     }
     return parent::massageFormValues($values, $form, $form_state);
   }

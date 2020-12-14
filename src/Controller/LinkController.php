@@ -3,6 +3,7 @@
 namespace Drupal\editorjs\Controller;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\editorjs\Event\EditorJsEvents;
 use Drupal\editorjs\Event\LinkFetchEvent;
 use GuzzleHttp\ClientInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -69,7 +70,7 @@ class LinkController implements ContainerInjectionInterface {
     }
 
     $event = new LinkFetchEvent($url);
-    $this->dispatcher->dispatch(LinkFetchEvent::NAME, $event);
+    $this->dispatcher->dispatch(EditorJsEvents::LINK_FETCH, $event);
 
     $result = [
       'success' => \count($event->meta()),
