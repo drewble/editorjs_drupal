@@ -81,6 +81,7 @@ class ImageController implements ContainerInjectionInterface {
       'success' => TRUE,
       'file' => [
         'url' => $file->createFileUrl(FALSE),
+        'id' => $file->id(),
       ],
     ];
     return new JsonResponse($result);
@@ -97,7 +98,7 @@ class ImageController implements ContainerInjectionInterface {
    *
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
-  public function fetch(Request $request): JsonResponse {
+  public function uploadUrl(Request $request): JsonResponse {
     $data = Json::decode($request->getContent());
     if (empty($data['url'])) {
       throw new BadRequestHttpException();
@@ -116,6 +117,7 @@ class ImageController implements ContainerInjectionInterface {
       'success' => TRUE,
       'file' => [
         'url' => $file->createFileUrl(FALSE),
+        'id' => $file->id(),
       ],
     ];
 

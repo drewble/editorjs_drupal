@@ -2,6 +2,8 @@
 
 namespace Drupal\editorjs\Plugin\Field\FieldWidget;
 
+use Drupal\Component\Serialization\Json;
+use Drupal\Component\Utility\DiffArray;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -89,7 +91,6 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     $settings = $this->prepareSettings($this->getSettings());
-    dump($settings);
     $element['value'] = $element + [
       '#type' => 'hidden',
       '#default_value' => $items[$delta]->value ?? '',
@@ -102,6 +103,9 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
         'data-field-name' => $items->getName(),
       ],
     ];
+    // Save origin value.
+    $form_state->set($items->getName() . ':' . $delta, $items[$delta]->value);
+
     return $element;
   }
 
@@ -135,5 +139,33 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
 
     return $settings;
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function massageFormValues(array $values, array $form, FormStateInterface $form_state) {
+    foreach ($values as $delta => $item) {
+      $origin_delta = $item['_original_delta'] ?? $delta;
+      $value = Json::decode($item['value'] ?? '');
+      $origin_value = $form_state->get($this->fieldDefinition->getName() . ':' . $origin_delta);
+      $origin_value = Json::decode($origin_value ?? '');
+
+      $diff = DiffArray::diffAssocRecursive($origin_value, $value);
+      // Skip if don't difference.
+      if (empty($diff)) {
+        continue;
+      }
+
+      foreach ($diff as $diff_item) {
+        if (!empty($diff_item['type'])) {
+          /** @var \Drupal\editorjs\EditorJsToolsInterface $instance */
+          $instance = $this->toolsManager->createInstance($diff_item['type']);
+          $instance->processValueDifference($diff_item);
+        }
+      }
+    }
+    return parent::massageFormValues($values, $form, $form_state);
+  }
+
 
 }

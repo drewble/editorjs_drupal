@@ -5,10 +5,10 @@ editorjs.image.upload:
   requirements:
     _permission: 'administer'
 
-editorjs.image.fetch:
-  path: '/admin/editorjs/fetch'
+editorjs.image.upload_url:
+  path: '/admin/editorjs/upload_url'
   defaults:
-    _controller: '\Drupal\editorjs\Controller\ImageController::fetch'
+    _controller: '\Drupal\editorjs\Controller\ImageController::uploadUrl'
   requirements:
     _permission: 'administer'
 

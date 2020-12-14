@@ -31,12 +31,19 @@ class ImageTool extends EditorJsToolsPluginBase {
 
     $elements['endpoints']['byUrl'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Endpoint for fetch'),
+      '#title' => $this->t('Endpoint for upload by url'),
       '#description' => $this->t('Your endpoint that provides uploading by Url.'),
       '#default_value' => $settings['endpoints']['byUrl'] ?? '/admin/editorjs/fetch',
     ];
 
     return $elements;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function processValueDifference($diff_value) {
+    dump($diff_value);
   }
 
   /**

@@ -17,50 +17,12 @@ use Drupal\file\Plugin\Field\FieldType\FileItem;
  *   label = @Translation("Editor JS"),
  *   category = @Translation("General"),
  *   default_widget = "editorjs",
- *   default_formatter = "string",
+ *   default_formatter = "editorjs_default",
  *   cardinality = 1
  * )
  */
 class EditorjsItem extends MapItem {
 
-  /**
-   * {@inheritdoc}
-   */
-  //public function fieldSettingsForm(array $form, FormStateInterface $form_state) {
-  //  $elements['tools'] = [
-  //    '#type' => 'container',
-  //  ];
-  //  $settings = $this->getSettings();
-  //
-  //  /** @var \Drupal\editorjs\EditorJsToolsPluginManager $manager */
-  //  $manager = \Drupal::service('plugin.manager.editorjs_tools');
-  //
-  //  foreach (array_keys($manager->getDefinitions()) as $plugin_id) {
-  //    $tool_settings = $settings['tools'][$plugin_id] ?? [];
-  //    /** @var \Drupal\editorjs\EditorJsToolsInterface $instance */
-  //    $instance = $manager->createInstance($plugin_id);
-  //    $elements['tools'][$plugin_id]['enable'] = [
-  //      '#type' => 'checkbox',
-  //      '#title' => $instance->label(),
-  //      '#description' => $instance->description(),
-  //      '#default_value' => $tool_settings['enable'] ?? FALSE,
-  //    ];
-  //    $elements['tools'][$plugin_id]['settings'] = [
-  //      '#type' => 'details',
-  //      '#title' => $this->t('Settings'),
-  //      '#states' => [
-  //        'visible' => [
-  //          ':input[name="settings[tools][' . $plugin_id . '][enable]"]' => ['checked' => TRUE],
-  //        ],
-  //      ],
-  //    ];
-  //
-  //    $settings_elements = $instance->settingsForm($tool_settings['settings'] ?? []);
-  //    $elements['tools'][$plugin_id]['settings'] += $settings_elements;
-  //    if (empty($settings_elements)) {
-  //      $elements['tools'][$plugin_id]['settings']['#access'] = FALSE;
-  //    }
-  //  }
     // @todo add settings to image tool plugin.
     //$element['image']['enable'] = [
     //  '#type' => 'checkbox',
@@ -86,9 +48,6 @@ class EditorjsItem extends MapItem {
     //  ],
     //];
 
-  //  return $elements;
-  //}
-
   /**
    * {@inheritdoc}
    */
@@ -102,6 +61,13 @@ class EditorjsItem extends MapItem {
   public static function generateSampleValue(FieldDefinitionInterface $field_definition) {
     $values['value'] = 'generateSampleValue';
     return $values;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function preSave() {
+    parent::preSave();
   }
 
 }

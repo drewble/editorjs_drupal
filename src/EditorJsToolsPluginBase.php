@@ -49,4 +49,9 @@ abstract class EditorJsToolsPluginBase extends PluginBase implements EditorJsToo
     return $elements;
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function processValueDifference($diff_value) {}
+
 }
