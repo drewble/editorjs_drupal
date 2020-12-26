@@ -9,15 +9,6 @@ init:
 core:
   js:
     /libraries/editorjs--editorjs/dist/editor.js: {}
-#  dependencies:
-#    - editorjs/header
-#    - editorjs/list
-#    - editorjs/checklist
-#    - editorjs/link
-#    - editorjs/table
-#    - editorjs/code
-#    - editorjs/delimiter
-#    - editorjs/image
 
 header:
   js:
