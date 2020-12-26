@@ -1,18 +1,22 @@
 (function (D, Editor) {
 
-  function loadScript(url, callback) {
-    var script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = url;
-    script.onreadystatechange = callback;
-    script.onload = callback;
-
-    document.body.appendChild(script);
-  }
-
   D.behaviors.editorJs = {
+    /**
+     * The list containing callback functions for call after load script.
+     */
     callbacks: [],
+    /**
+     * The list containing paths to script.
+     */
     scripts: [],
+    /**
+     * The function attach all dependencies scripts.
+     *
+     * @param {object} settings
+     *   The editor settings.
+     * @param {Function} callback
+     *   The callback function.
+     */
     attachDependencies: function (settings, callback) {
       let scripts = [];
       Object.keys(settings).map(field => {
@@ -27,7 +31,7 @@
 
       let loaded_count = 0;
       scripts.forEach(path => {
-        loadScript(path, () => {
+        this.loadScript(path, () => {
           loaded_count++;
           if (scripts.length === loaded_count) {
             this.callbacks.forEach(item => {
@@ -44,6 +48,15 @@
         'use': false,
       })
     },
+    /**
+     * The prepare tools for init editorJs.
+     *
+     * @param {object} tools
+     *   The source tools list.
+     *
+     * @return {object}
+     *   The tools after prepare.
+     */
     prepareTools: function (tools) {
       Object.keys(tools).map(tool => {
         tools[tool].class = window[tools[tool].class]
@@ -80,6 +93,23 @@
         })
 
       })
+    },
+    /**
+     * Attach scripts.
+     *
+     * @param {string} url
+     *   The path to script.
+     * @param {Function} callback
+     *   The callback function after attach script.
+     */
+    loadScript: function (url, callback) {
+      var script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = url;
+      script.onreadystatechange = callback;
+      script.onload = callback;
+
+      document.body.appendChild(script);
     }
   }
 }(Drupal, EditorJS))
