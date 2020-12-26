@@ -1,0 +1,5 @@
+<{% if data.style == 'ordered' %}ol{% else %}ul{% endif %}>
+  {% for item in data.items %}
+    <li>{{ item }}</li>
+  {% endfor %}
+</{% if data.style == 'ordered' %}ol{% else %}ul{% endif %}>

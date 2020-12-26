@@ -11,6 +11,7 @@
 function template_preprocess_ce_block(&$variables) {
   $variables['type'] = $variables['data']['type'];
   $variables['data'] = $variables['data']['data'];
+ 
 }
 
 /**

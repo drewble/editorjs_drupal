@@ -10,6 +10,10 @@
  */
 function editorjs_theme() {
   return [
+    'ce_default' => [
+      'variables' => ['data' => []],
+      'file' => 'editorjs.theme.inc',
+    ],
     'ce_block' => [
       'variables' => ['data' => []],
       'file' => 'editorjs.theme.inc',

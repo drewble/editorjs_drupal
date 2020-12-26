@@ -26,12 +26,34 @@ class EditerJsFormatter extends FormatterBase {
     $element = [];
 
     foreach ($items as $delta => $item) {
+      //$element[$delta] = $this->prepareValue($item->value);
       $element[$delta] = [
-        '#markup' => $item->value,
+        '#theme' => 'ce_default',
+        '#data' => Json::decode($item->value),
       ];
     }
 
     return $element;
+  }
+
+  /**
+   * Prepare source value for render.
+   *
+   * @param string $value
+   *   The source value.
+   *
+   * @return array
+   *   Renderable structure.
+   */
+  public function prepareValue($value): array {
+    $build = [];
+    foreach (Json::decode($value) as $item) {
+      $build[] = [
+        '#theme' => 'ce_block__' . $item['type'],
+        '#data' => $item,
+      ];
+    }
+    return $build;
   }
 
 }

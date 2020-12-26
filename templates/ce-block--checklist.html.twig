@@ -1,0 +1,8 @@
+<div class="checklist">
+  {% for item in data.items %}
+    <label class="checklist--item">
+      <input name="checklist--ite" type="checkbox" {% if item.checked %}checked{% endif %} disabled>
+      {{ item.text }}
+    </label>
+  {% endfor %}
+</div>
