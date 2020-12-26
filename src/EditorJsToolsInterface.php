@@ -2,7 +2,9 @@
 
 namespace Drupal\editorjs;
 
+use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\editorjs\Plugin\Field\FieldType\EditorjsItem;
 
 /**
  * Interface for editorjs_tools plugins.
@@ -62,5 +64,19 @@ interface EditorJsToolsInterface {
    *   The prepare settings contains keys 'config', 'inlineToolbar' or other.
    */
   public function prepareSettings(array $settings);
+
+  /**
+   * Defines post-save behavior.
+   *
+   * @param array $value
+   *   The new value.
+   * @param \Drupal\Core\Entity\FieldableEntityInterface $entity
+   *   The entity that field belongs to.
+   * @param bool $update
+   *   Specifies whether the entity is being updated or created.
+   *
+   * @see \Drupal\editorjs\Plugin\Field\FieldType\EditorjsItem::postSave
+   */
+  public function postSave(array $value, FieldableEntityInterface $entity, $update);
 
 }

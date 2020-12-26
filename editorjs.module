@@ -4,3 +4,31 @@
  * @file
  * Primary module hooks for Editor.js for paragraph module.
  */
+
+/**
+ * Implements hook_theme().
+ */
+function editorjs_theme() {
+  return [
+    'ce_block' => [
+      'variables' => ['data' => []],
+      'file' => 'editorjs.theme.inc',
+      'pattern' => 'ce_block__',
+    ],
+    'ce_block__list' => [
+      'base hook' => 'ce_block',
+    ],
+    'ce_block__delimiter' => [
+      'base hook' => 'ce_block',
+    ],
+    'ce_block__checklist' => [
+      'base hook' => 'ce_block',
+    ],
+    'ce_block__code' => [
+      'base hook' => 'ce_block',
+    ],
+    'ce_block__linkTool' => [
+      'base hook' => 'ce_block',
+    ],
+  ];
+}

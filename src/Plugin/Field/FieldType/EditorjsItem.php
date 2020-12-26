@@ -71,26 +71,14 @@ class EditorjsItem extends MapItem {
    * {@inheritdoc}
    */
   public function postSave($update) {
+    /** @var \Drupal\editorjs\EditorJsToolsPluginManager $manager */
+    $manager = \Drupal::service('plugin.manager.editorjs_tools');
     $value = Json::decode($this->values['value'] ?? '');
     foreach ($value as $item) {
-      if (isset($item['type']) && $item['type'] === 'image') {
-        $fid = $item['data']['file']['id'] ?? NULL;
-        // Skip if file id not found.
-        if (empty($fid)) {
-          return;
-        }
-        /** @var \Drupal\file\FileUsage\FileUsageInterface $file_usage */
-        $file_usage = \Drupal::service('file.usage');
-        /** @var \Drupal\file\Entity\File $file */
-        $file = File::load($fid);
-        // Setting status to permanent and add to file usage.
-        if ($file) {
-          $file_usage->add($file, 'editorjs', $this->getEntity()->getEntityTypeId(), $this->getEntity()->id());
-          if ($file->isTemporary()) {
-            $file->setPermanent();
-            $file->save();
-          }
-        }
+      if ($manager->hasDefinition($item['type'])) {
+        /** @var \Drupal\editorjs\EditorJsToolsInterface $instance */
+        $instance = $manager->createInstance($item['type']);
+        $instance->postSave($item, $this->getEntity(), $update);
       }
     }
   }

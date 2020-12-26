@@ -2,7 +2,10 @@
 
 namespace Drupal\editorjs\Plugin\EditorjsTools;
 
+use Drupal\Component\Serialization\Json;
+use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\editorjs\EditorJsToolsPluginBase;
+use Drupal\editorjs\Plugin\Field\FieldType\EditorjsItem;
 use Drupal\file\Entity\File;
 
 /**
@@ -56,6 +59,29 @@ class ImageTool extends EditorJsToolsPluginBase {
         'endpoints' => $settings['endpoints'],
       ],
     ];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function postSave(array $value, FieldableEntityInterface $entity, $update) {
+    $fid = $value['data']['file']['id'] ?? NULL;
+    // Skip if file id not found.
+    if (empty($fid)) {
+      return;
+    }
+    /** @var \Drupal\file\FileUsage\FileUsageInterface $file_usage */
+    $file_usage = \Drupal::service('file.usage');
+    /** @var \Drupal\file\Entity\File $file */
+    $file = File::load($fid);
+    // Setting status to permanent and add to file usage.
+    if ($file) {
+      $file_usage->add($file, 'editorjs', $entity->getEntityTypeId(), $entity->id());
+      if ($file->isTemporary()) {
+        $file->setPermanent();
+        $file->save();
+      }
+    }
   }
 
 }
