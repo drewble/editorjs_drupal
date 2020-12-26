@@ -9,7 +9,7 @@ use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\editorjs\Event\EditorJsEvents;
-use Drupal\editorjs\Event\FormSubmitEvent;
+use Drupal\editorjs\Event\MassageValuesEvent;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -114,7 +114,7 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
       ],
     ];
     // Save origin value.
-    $form_state->set($items->getName() . ':' . $delta, $items[$delta]->value);
+    $form_state->set('origin:' . $items->getName() . ':' . $delta, $items[$delta]->value);
 
     return $element;
   }
@@ -154,17 +154,11 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
    * {@inheritdoc}
    */
   public function massageFormValues(array $values, array $form, FormStateInterface $form_state) {
-    foreach ($values as $delta => $item) {
-      $origin_delta = $item['_original_delta'] ?? $delta;
-      $value = Json::decode($item['value'] ?? '');
-      $origin_value = $form_state->get($this->fieldDefinition->getName() . ':' . $origin_delta);
-      $origin_value = Json::decode($origin_value ?? '');
-
-      $this
-        ->dispatcher
-        ->dispatch(EditorJsEvents::FORM_SUBMIT, new FormSubmitEvent($value, $origin_value));
-    }
-    return parent::massageFormValues($values, $form, $form_state);
+    $event = new MassageValuesEvent($values, $form, $form_state, $this->fieldDefinition->getName());
+    $this
+      ->dispatcher
+      ->dispatch(EditorJsEvents::MASSAGE_FORM_VALUES, $event);
+    return parent::massageFormValues($event->getNewValues(), $form, $form_state);
   }
 
 

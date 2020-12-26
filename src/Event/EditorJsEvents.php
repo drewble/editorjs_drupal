@@ -13,8 +13,8 @@ final class EditorJsEvents {
   public const LINK_FETCH = 'editorjs.link_fetch';
 
   /**
-   * The event name for processing values post form submit.
+   * The event name for massage form values.
    */
-  public const FORM_SUBMIT = 'editorjs.form_submit';
+  public const MASSAGE_FORM_VALUES = 'editorjs.massage_form_values';
 
 }

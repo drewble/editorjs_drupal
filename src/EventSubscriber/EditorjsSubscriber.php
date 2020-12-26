@@ -2,13 +2,15 @@
 
 namespace Drupal\editorjs\EventSubscriber;
 
+use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\DiffArray;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\editorjs\Event\EditorJsEvents;
-use Drupal\editorjs\Event\FormSubmitEvent;
+use Drupal\editorjs\Event\MassageValuesEvent;
 use Drupal\editorjs\Event\LinkFetchEvent;
 use Drupal\file\Entity\File;
+use Drupal\file\FileUsage\FileUsageInterface;
 use GuzzleHttp\ClientInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -32,14 +34,26 @@ class EditorjsSubscriber implements EventSubscriberInterface {
   protected $entityTypeManager;
 
   /**
+   * The file usage service.
+   *
+   * @var \Drupal\file\FileUsage\FileUsageInterface
+   */
+  protected $fileUsage;
+
+  /**
    * EditorjsSubscriber constructor.
    *
    * @param \GuzzleHttp\ClientInterface $client
    *   The http client.
+   * @param \Drupal\Core\Entity\EntityTypeManager $entityTypeManager
+   *   The entity type manager.
+   * @param \Drupal\file\FileUsage\FileUsageInterface $fileUsage
+   *   The file usage service.
    */
-  public function __construct(ClientInterface $client, EntityTypeManager $entityTypeManager) {
+  public function __construct(ClientInterface $client, EntityTypeManager $entityTypeManager, FileUsageInterface $fileUsage) {
     $this->client = $client;
     $this->entityTypeManager = $entityTypeManager;
+    $this->fileUsage = $fileUsage;
   }
 
   /**
@@ -48,7 +62,7 @@ class EditorjsSubscriber implements EventSubscriberInterface {
   public static function getSubscribedEvents() {
     return [
       EditorJsEvents::LINK_FETCH => 'linkFetch',
-      EditorJsEvents::FORM_SUBMIT => 'processDifferenceValues',
+      EditorJsEvents::MASSAGE_FORM_VALUES => 'processDifferenceValues',
     ];
   }
 
@@ -56,32 +70,41 @@ class EditorjsSubscriber implements EventSubscriberInterface {
   /**
    * Processing difference values.
    *
-   * @param \Drupal\editorjs\Event\FormSubmitEvent $event
+   * @param \Drupal\editorjs\Event\MassageValuesEvent $event
    *   The event instance.
    */
-  public function processDifferenceValues(FormSubmitEvent $event) {
-    $diff = DiffArray::diffAssocRecursive($event->getOriginValue(), $event->getNewValue());
-    if (empty($diff)) {
-      return;
-    }
+  public function processDifferenceValues(MassageValuesEvent $event) {
+    // $event->getFormState()->getFormObject()->entity
+    foreach ($event->getNewValues() as $delta => $item) {
+      $origin_delta = $item['_original_delta'] ?? $delta;
+      $value = Json::decode($item['value'] ?? '');
+      $origin_value = $event->getOriginValueByDelta($origin_delta);
+      $origin_value = Json::decode($origin_value ?? '');
 
-    foreach ($diff as $diff_item) {
-      if (isset($diff_item['type']) && $diff_item['type'] === 'image') {
-        $fid = $diff_item['data']['file']['id'] ?? NULL;
-        // Skip if file id not found.
-        if (empty($fid)) {
-          return;
-        }
-        // Change status to temporary.
-        /** @var \Drupal\file\Entity\File $file */
-        $file = $this->entityTypeManager->getStorage('file')->load($fid);
-        if ($file) {
-          $file->setTemporary();
-          $file->save();
+      $diff = DiffArray::diffAssocRecursive($origin_value, $value);
+      if (empty($diff)) {
+        return;
+      }
+
+      foreach ($diff as $diff_item) {
+        if (isset($diff_item['type']) && $diff_item['type'] === 'image') {
+          $fid = $diff_item['data']['file']['id'] ?? NULL;
+          // Skip if file id not found.
+          if (empty($fid)) {
+            return;
+          }
+          // Change status to temporary.
+          /** @var \Drupal\file\Entity\File $file */
+          $file = $this->entityTypeManager->getStorage('file')->load($fid);
+          if ($file && $file->isPermanent()) {
+            $this->fileUsage->delete($file, 'editorjs');
+            $file->setTemporary();
+            $file->save();
+          }
         }
       }
-    }
 
+    }
   }
 
   /**

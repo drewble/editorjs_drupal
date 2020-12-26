@@ -2,12 +2,16 @@
 
 namespace Drupal\editorjs\Plugin\Field\FieldType;
 
+use Drupal\Component\Serialization\Json;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\Plugin\Field\FieldType\MapItem;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Url;
+use Drupal\file\Entity\File;
 use Drupal\file\Plugin\Field\FieldType\FileItem;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Defines the 'editorjs' field type.
@@ -23,7 +27,7 @@ use Drupal\file\Plugin\Field\FieldType\FileItem;
  */
 class EditorjsItem extends MapItem {
 
-    // @todo add settings to image tool plugin.
+  // @todo add settings to image tool plugin.
     //$element['image']['enable'] = [
     //  '#type' => 'checkbox',
     //  '#title' => $this->t('Image plugin'),
@@ -67,7 +71,28 @@ class EditorjsItem extends MapItem {
    * {@inheritdoc}
    */
   public function postSave($update) {
-    parent::postSave($update);
+    $value = Json::decode($this->values['value'] ?? '');
+    foreach ($value as $item) {
+      if (isset($item['type']) && $item['type'] === 'image') {
+        $fid = $item['data']['file']['id'] ?? NULL;
+        // Skip if file id not found.
+        if (empty($fid)) {
+          return;
+        }
+        /** @var \Drupal\file\FileUsage\FileUsageInterface $file_usage */
+        $file_usage = \Drupal::service('file.usage');
+        /** @var \Drupal\file\Entity\File $file */
+        $file = File::load($fid);
+        // Setting status to permanent and add to file usage.
+        if ($file) {
+          $file_usage->add($file, 'editorjs', $this->getEntity()->getEntityTypeId(), $this->getEntity()->id());
+          if ($file->isTemporary()) {
+            $file->setPermanent();
+            $file->save();
+          }
+        }
+      }
+    }
   }
 
 }
