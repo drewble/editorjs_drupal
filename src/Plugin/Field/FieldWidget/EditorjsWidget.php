@@ -120,6 +120,26 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
   }
 
   /**
+   * {@inheritdoc}
+   */
+  public function settingsSummary() {
+    $summary = [$this->t('Enabled tools:')];
+    foreach ($this->getSetting('tools') as $plugin_id => $tool) {
+      if (empty($tool['enable'])) {
+        continue;
+      }
+      $def = $this->toolsManager->getDefinition($plugin_id, FALSE);
+      if (empty($def)) {
+        $summary[] = $this->t('Not found :id tool.', [':id' => $plugin_id]);
+        continue;
+      }
+      $summary[] = $def['label'];
+    }
+    return $summary;
+  }
+
+
+  /**
    * Prepare settings tools for init EditorJs.
    *
    * @param array $settings
@@ -127,8 +147,10 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
    *
    * @return array
    *   The settings for tools.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\PluginException
    */
-  protected function prepareSettings(array $settings = []) {
+  protected function prepareSettings(array $settings = []): array {
     if (empty($settings['tools'])) {
       return [];
     }
