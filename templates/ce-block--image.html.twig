@@ -1,4 +1,15 @@
-<div class="cdx-block image-tool image-tool--filled">
+{%
+  set classes = [
+    'ce-block__content',
+    'image-tool',
+    'image-tool--filled',
+    data.withBorder ? 'image-tool--withBorder',
+    data.withBackground ? 'image-tool--withBackground',
+    data.stretched ? 'image-tool--stretched',
+  ]
+%}
+
+<div {{ attributes.addClass(classes) }}>
   <div class="image-tool__image">
     <img class="image-tool__image-picture" src="{{ data.file.url }}">
   </div>

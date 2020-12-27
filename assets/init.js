@@ -78,6 +78,7 @@
             data['blocks'] = JSON.parse(item.value);
           }
           let ei = new Editor({
+            autofocus: true,
             holder: holder,
             logLevel: 'WARN',
             tools:  this.prepareTools(settings[item.dataset.fieldName].tools || {}),

@@ -66,7 +66,6 @@ class EditorjsSubscriber implements EventSubscriberInterface {
     ];
   }
 
-
   /**
    * Processing difference values.
    *
@@ -74,7 +73,6 @@ class EditorjsSubscriber implements EventSubscriberInterface {
    *   The event instance.
    */
   public function processDifferenceValues(MassageValuesEvent $event) {
-    // $event->getFormState()->getFormObject()->entity
     foreach ($event->getNewValues() as $delta => $item) {
       $origin_delta = $item['_original_delta'] ?? $delta;
       $value = Json::decode($item['value'] ?? '');

@@ -4,10 +4,32 @@
   margin-bottom: 10px;
 }
 
+.image-tool--withBorder .image-tool__image {
+  border: 1px solid #e8e8eb;
+}
+
+.image-tool--withBackground .image-tool__image {
+  padding: 15px;
+  background: #cdd1e0;
+}
+
 .image-tool__image-picture {
   max-width: 100%;
   vertical-align: bottom;
   display: block;
+}
+
+.image-tool--withBackground .image-tool__image-picture {
+  max-width: 60%;
+  margin: 0 auto;
+}
+
+.image-tool--stretched {
+  max-width: 100%;
+}
+
+.image-tool--stretched .image-tool__image-picture {
+  width: 100%;
 }
 
 .image-tool__caption {
