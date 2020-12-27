@@ -10,6 +10,10 @@
  */
 function editorjs_theme() {
   return [
+    'ce_blocks' => [
+      'render element' => 'elements',
+      'file' => 'editorjs.theme.inc',
+    ],
     'ce_default' => [
       'variables' => ['data' => []],
       'file' => 'editorjs.theme.inc',
@@ -18,6 +22,9 @@ function editorjs_theme() {
       'variables' => ['data' => []],
       'file' => 'editorjs.theme.inc',
       'pattern' => 'ce_block__',
+    ],
+    'ce_block__header' => [
+      'base hook' => 'ce_block',
     ],
     'ce_block__list' => [
       'base hook' => 'ce_block',
@@ -32,6 +39,12 @@ function editorjs_theme() {
       'base hook' => 'ce_block',
     ],
     'ce_block__linkTool' => [
+      'base hook' => 'ce_block',
+    ],
+    'ce_block__image' => [
+      'base hook' => 'ce_block',
+    ],
+    'ce_block__table' => [
       'base hook' => 'ce_block',
     ],
   ];

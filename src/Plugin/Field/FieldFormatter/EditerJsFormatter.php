@@ -23,14 +23,11 @@ class EditerJsFormatter extends FormatterBase {
    * {@inheritdoc}
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
-    $element = [];
 
     foreach ($items as $delta => $item) {
-      //$element[$delta] = $this->prepareValue($item->value);
       $element[$delta] = [
-        '#theme' => 'ce_default',
-        '#data' => Json::decode($item->value),
-      ];
+        '#theme' => 'ce_blocks',
+      ] + $this->prepareValue($item->value);
     }
 
     return $element;

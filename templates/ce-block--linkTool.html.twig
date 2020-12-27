@@ -1,7 +1,10 @@
-<a class="link-tool__content link-tool__content--rendered" target="_blank" rel="nofollow noindex noreferrer"
-   href="https://batkor.ru/">
-  <div class="link-tool__image" ></div>
-  <div class="link-tool__title">Заметки веб разработчика</div>
-  <p class="link-tool__description">Заметки связанные с веб разработкой, а так же CMS Drupal, PHP, JS.</p><span
-    class="link-tool__anchor">batkor.ru</span>
-</a>
+<div class="link-tool">
+  <a class="link-tool__content link-tool__content--rendered"
+     target="_blank" rel="nofollow noindex noreferrer"
+     href="{{ data.link }}">
+    <div class="link-tool__image" style="background-image: url('{{ data.meta.image.url }}');"></div>
+    <div class="link-tool__title">{{ data.meta.title }}</div>
+    <p class="link-tool__description">{{ data.meta.description }}</p><span
+      class="link-tool__anchor">{{ data.anchor }}</span>
+  </a>
+</div>

@@ -1,0 +1,13 @@
+<div class="ce-table__wrap">
+  <table class="ce-table">
+    <tbody>
+    {% for row in data.content %}
+      <tr>
+        {% for cell in row %}
+          <td class="ce-table__cell"><div class="ce-table__area">{{ cell }}</div></td>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>

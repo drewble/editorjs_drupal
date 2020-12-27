@@ -1,5 +1,5 @@
-<{% if data.style == 'ordered' %}ol{% else %}ul{% endif %}>
+<ul class="cdx-block cdx-list cdx-list--{{ data.style }}">
   {% for item in data.items %}
-    <li>{{ item }}</li>
+    <li class="cdx-list__item">{{ item }}</li>
   {% endfor %}
-</{% if data.style == 'ordered' %}ol{% else %}ul{% endif %}>
+</ul>

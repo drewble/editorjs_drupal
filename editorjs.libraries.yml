@@ -10,34 +10,42 @@ core:
   js:
     /libraries/editorjs--editorjs/dist/editor.js: {}
 
-header:
-  js:
-    /libraries/editorjs--header/dist/bundle.js: {}
+base:
+  css:
+    layout:
+      assets/base.css: {}
 
 list:
-  js:
-    /libraries/editorjs--list/dist/bundle.js: {}
+  css:
+    component:
+      assets/list.css: { }
 
 checklist:
-  js:
-    /libraries/editorjs--checklist/dist/bundle.js: {}
+  css:
+    component:
+      assets/checklist.css: { }
 
-link:
-  js:
-    /libraries/editorjs--link/dist/bundle.js: {}
+linkTool:
+  css:
+    component:
+      assets/linkTool.css: { }
 
 table:
-  js:
-    /libraries/editorjs--table/dist/bundle.js: {}
+  css:
+    component:
+      assets/table.css: { }
 
 code:
-  js:
-    /libraries/editorjs--code/dist/bundle.js: {}
+  css:
+    component:
+      assets/code.css: { }
 
 delimiter:
-  js:
-    /libraries/editorjs--delimiter/dist/bundle.js: {}
+  css:
+    component:
+      assets/delimiter.css: { }
 
 image:
-  js:
-    /libraries/editorjs--image/dist/bundle.js: {}
+  css:
+    component:
+      assets/image.css: { }

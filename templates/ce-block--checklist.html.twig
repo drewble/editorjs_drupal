@@ -1,8 +1,8 @@
-<div class="checklist">
+<div class="cdx-block cdx-checklist">
   {% for item in data.items %}
-    <label class="checklist--item">
-      <input name="checklist--ite" type="checkbox" {% if item.checked %}checked{% endif %} disabled>
-      {{ item.text }}
-    </label>
+    <div class="cdx-checklist__item cdx-checklist__item--{% if item.checked %}checked{% endif %}">
+      <span class="cdx-checklist__item-checkbox"></span>
+      <div class="cdx-checklist__item-text">{{ item.text }}</div>
+    </div>
   {% endfor %}
 </div>

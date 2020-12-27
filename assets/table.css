@@ -1,0 +1,35 @@
+.ce-table__wrap {
+  border: 1px solid #dbdbe2;
+  border-radius: 3px;
+  position: relative;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+.ce-table {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.ce-table tbody tr td:first-child {
+  border-left: none;
+}
+
+.ce-table tbody tr:first-child td {
+  border-top: none;
+}
+
+.ce-table__cell {
+  border: 1px solid #dbdbe2;
+  padding: 0;
+  vertical-align: top;
+  background: #fff;
+}
+
+.ce-table__area {
+  padding: 10px;
+  height: 100%;
+}
