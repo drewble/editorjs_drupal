@@ -5,11 +5,10 @@ namespace Drupal\editorjs\EventSubscriber;
 use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\DiffArray;
 use Drupal\Component\Utility\Html;
-use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Entity\EntityRepositoryInterface;
 use Drupal\editorjs\Event\EditorJsEvents;
 use Drupal\editorjs\Event\MassageValuesEvent;
 use Drupal\editorjs\Event\LinkFetchEvent;
-use Drupal\file\Entity\File;
 use Drupal\file\FileUsage\FileUsageInterface;
 use GuzzleHttp\ClientInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -29,9 +28,9 @@ class EditorjsSubscriber implements EventSubscriberInterface {
   /**
    * The entity type manager.
    *
-   * @var \Drupal\Core\Entity\EntityTypeManager
+   * @var \Drupal\Core\Entity\EntityRepositoryInterface
    */
-  protected $entityTypeManager;
+  protected $entityRepository;
 
   /**
    * The file usage service.
@@ -45,14 +44,14 @@ class EditorjsSubscriber implements EventSubscriberInterface {
    *
    * @param \GuzzleHttp\ClientInterface $client
    *   The http client.
-   * @param \Drupal\Core\Entity\EntityTypeManager $entityTypeManager
-   *   The entity type manager.
+   * @param \Drupal\Core\Entity\EntityRepositoryInterface $entityRepository
+   *   The entity repository.
    * @param \Drupal\file\FileUsage\FileUsageInterface $fileUsage
    *   The file usage service.
    */
-  public function __construct(ClientInterface $client, EntityTypeManager $entityTypeManager, FileUsageInterface $fileUsage) {
+  public function __construct(ClientInterface $client, EntityRepositoryInterface $entityRepository, FileUsageInterface $fileUsage) {
     $this->client = $client;
-    $this->entityTypeManager = $entityTypeManager;
+    $this->entityRepository = $entityRepository;
     $this->fileUsage = $fileUsage;
   }
 
@@ -86,14 +85,14 @@ class EditorjsSubscriber implements EventSubscriberInterface {
 
       foreach ($diff as $diff_item) {
         if (isset($diff_item['type']) && $diff_item['type'] === 'image') {
-          $fid = $diff_item['data']['file']['id'] ?? NULL;
+          $uuid = $diff_item['data']['file']['uuid'] ?? NULL;
           // Skip if file id not found.
-          if (empty($fid)) {
+          if (empty($uuid)) {
             return;
           }
           // Change status to temporary.
           /** @var \Drupal\file\Entity\File $file */
-          $file = $this->entityTypeManager->getStorage('file')->load($fid);
+          $file = $this->entityRepository->loadEntityByUuid('file', $uuid);
           if ($file && $file->isPermanent()) {
             $this->fileUsage->delete($file, 'editorjs');
             $file->setTemporary();

@@ -1,7 +1,7 @@
 services:
   editorjs.event_subscriber:
     class: Drupal\editorjs\EventSubscriber\EditorjsSubscriber
-    arguments: ['@http_client', '@entity_type.manager', '@file.usage']
+    arguments: ['@http_client', '@entity.repository', '@file.usage']
     tags:
       - { name: event_subscriber }
 

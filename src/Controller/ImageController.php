@@ -7,6 +7,7 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\file\Entity\File;
+use Drupal\image\Entity\ImageStyle;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -81,7 +82,7 @@ class ImageController implements ContainerInjectionInterface {
       'success' => TRUE,
       'file' => [
         'url' => $file->createFileUrl(FALSE),
-        'id' => $file->id(),
+        'uuid' => $file->uuid(),
       ],
     ];
     return new JsonResponse($result);
@@ -117,11 +118,39 @@ class ImageController implements ContainerInjectionInterface {
       'success' => TRUE,
       'file' => [
         'url' => $file->createFileUrl(FALSE),
-        'id' => $file->id(),
+        'uuid' => $file->uuid(),
       ],
     ];
 
     return new JsonResponse($result);
+  }
+
+  /**
+   * Response for generate image style url.
+   *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The request.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The response.
+   */
+  public function styleUrl(Request $request): JsonResponse {
+    $data = Json::decode($request->getContent());
+
+    /** @var \Drupal\file\Entity\File $file */
+    $file = File::load($data['file_id']);
+    if (!$file) {
+      throw new BadRequestHttpException('File not found.');
+    }
+    /** @var \Drupal\image\Entity\ImageStyle $image_style */
+    $image_style = ImageStyle::load($data['image_style_id']);
+    if (!$image_style) {
+      throw new BadRequestHttpException('Image style not found.');
+    }
+
+    $url = $image_style->buildUrl($file->getFileUri());
+
+    return new JsonResponse(['url' => $url]);
   }
 
   /**

@@ -2,11 +2,12 @@
 
 namespace Drupal\editorjs\Plugin\EditorjsTools;
 
-use Drupal\Component\Serialization\Json;
+use Drupal\Core\Access\CsrfRequestHeaderAccessCheck;
 use Drupal\Core\Entity\FieldableEntityInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\editorjs\EditorJsToolsPluginBase;
-use Drupal\editorjs\Plugin\Field\FieldType\EditorjsItem;
 use Drupal\file\Entity\File;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Plugin implementation of the editorjs_tools.
@@ -18,7 +19,31 @@ use Drupal\file\Entity\File;
  *   description = @Translation("Provides image tool.")
  * )
  */
-class ImageTool extends EditorJsToolsPluginBase {
+class ImageTool extends EditorJsToolsPluginBase implements ContainerFactoryPluginInterface {
+
+  /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityRepository|object|null
+   */
+  protected $entityRepository;
+
+  /**
+   * The file usage backend.
+   *
+   * @var \Drupal\file\FileUsage\DatabaseFileUsageBackend|object|null
+   */
+  protected $fileUsage;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    $instance = new static($configuration, $plugin_id, $plugin_definition);
+    $instance->entityRepository = $container->get('entity.repository');
+    $instance->fileUsage = $container->get('file.usage');
+    return $instance;
+  }
 
   /**
    * {@inheritdoc}
@@ -40,6 +65,13 @@ class ImageTool extends EditorJsToolsPluginBase {
       '#default_value' => $settings['endpoints']['byUrl'] ?? '/admin/editorjs/fetch',
     ];
 
+    $elements['endpoints']['fetchStyleUrl'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Fetch image style url'),
+      '#description' => $this->t('Endpoint for get image style url.'),
+      '#default_value' => $settings['endpoints']['fetchStyleUrl'] ?? '/admin/editorjs/style_url',
+    ];
+
     return $elements;
   }
 
@@ -47,7 +79,7 @@ class ImageTool extends EditorJsToolsPluginBase {
    * {@inheritdoc}
    */
   public function getFile() {
-    return '/libraries/editorjs--image/dist/bundle.js';
+    return '/libraries/image/dist/bundle.js';
   }
 
   /**
@@ -57,6 +89,7 @@ class ImageTool extends EditorJsToolsPluginBase {
     return [
       'config' => [
         'endpoints' => $settings['endpoints'],
+        'image_styles' => image_style_options(),
       ],
     ];
   }
@@ -65,18 +98,20 @@ class ImageTool extends EditorJsToolsPluginBase {
    * {@inheritdoc}
    */
   public function postSave(array $value, FieldableEntityInterface $entity, $update) {
-    $fid = $value['data']['file']['id'] ?? NULL;
+    $uuid = $value['data']['file']['uuid'] ?? NULL;
     // Skip if file id not found.
-    if (empty($fid)) {
+    if (empty($uuid)) {
       return;
     }
-    /** @var \Drupal\file\FileUsage\FileUsageInterface $file_usage */
-    $file_usage = \Drupal::service('file.usage');
+
     /** @var \Drupal\file\Entity\File $file */
-    $file = File::load($fid);
+    $file = $this->entityRepository->loadEntityByUuid('file', $uuid);
     // Setting status to permanent and add to file usage.
     if ($file) {
-      $file_usage->add($file, 'editorjs', $entity->getEntityTypeId(), $entity->id());
+      $usage_list = $this->fileUsage->listUsage($file);
+      if (!isset($usage_list['editorjs'][$entity->getEntityTypeId()][$entity->id()])) {
+        $this->fileUsage->add($file, 'editorjs', $entity->getEntityTypeId(), $entity->id());
+      }
       if ($file->isTemporary()) {
         $file->setPermanent();
         $file->save();

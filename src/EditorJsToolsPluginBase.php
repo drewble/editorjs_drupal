@@ -4,9 +4,7 @@ namespace Drupal\editorjs;
 
 use Drupal\Component\Plugin\PluginBase;
 use Drupal\Core\Entity\FieldableEntityInterface;
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drupal\editorjs\Plugin\Field\FieldType\EditorjsItem;
 
 /**
  * Base class for editorjs_tools plugins.
