@@ -79,7 +79,7 @@ class ImageTool extends EditorJsToolsPluginBase implements ContainerFactoryPlugi
    * {@inheritdoc}
    */
   public function getFile() {
-    return '/libraries/image/dist/bundle.js';
+    return '/libraries/editorjs-dimage/dist/bundle.js';
   }
 
   /**
