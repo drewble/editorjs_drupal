@@ -11,7 +11,7 @@
 
 <div {{ attributes.addClass(classes) }}>
   <div class="image-tool__image">
-    <img class="image-tool__image-picture" src="{{ data.file.url }}">
+    {{ data.image }}
   </div>
   {% if data.caption %}<div class="cdx-input image-tool__caption">{{ data.caption }}</div>{% endif %}
 </div>

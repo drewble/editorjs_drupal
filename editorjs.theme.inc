@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Render\Element;
+use Drupal\image\Entity\ImageStyle;
 
 /**
  * Implements hook_preprocess_HOOK().
@@ -18,13 +19,6 @@ function template_preprocess_ce_blocks(&$variables) {
     $libraries[] = 'editorjs/' . $variables['elements'][$key]['#data']['type'];
   }
   $variables['#attached']['library'] = $libraries;
-}
-
-/**
- * Implements hook_preprocess_HOOK().
- */
-function template_preprocess_ce_block__linkTool(&$variables) {
-  $variables['data']['anchor'] = parse_url($variables['data']['link'], PHP_URL_HOST);
 }
 
 /**
@@ -45,3 +39,27 @@ function editorjs_theme_suggestions_ce_block(array $variables) {
   }
   return $suggestions;
 }
+
+/**
+ * Implements hook_preprocess_HOOK().
+ *
+ * Prepare variables for "ce_block__image" template.
+ */
+function template_preprocess_ce_block__image(&$variables) {
+  $theme = empty($variables['data']['image_style']) ? 'image' : 'image_style';
+
+  /** @var \Drupal\file\Entity\File $file */
+  $file = \Drupal::service('entity.repository')
+    ->loadEntityByUuid('file', $variables['data']['file']['uuid']);
+  if (empty($file)) {
+    return;
+  }
+
+  $variables['data']['image'] = [
+    '#theme' => $theme,
+    '#style_name' => $variables['data']['image_style'] ?? NULL,
+    '#uri' => $file->getFileUri(),
+    '#attributes' => ['class' => ['image-tool__image-picture']],
+  ];
+}
+

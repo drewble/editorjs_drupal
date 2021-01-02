@@ -21,14 +21,14 @@
         "npm-asset/editorjs--inline-code": "^1.3",
         "npm-asset/editorjs--link": "^2.2",
         "npm-asset/editorjs--list": "^1.6",
-        "npm-asset/editorjs--table": "^1.3"
+        "npm-asset/editorjs-table": "^1.3"
     },
-    "repositories": {
-        "assets": {
+    "repositories": [
+        {
             "type": "composer",
             "url": "https://asset-packagist.org"
         }
-    },
+    ],
     "extra": {
         "installer-types": [
             "npm-asset"

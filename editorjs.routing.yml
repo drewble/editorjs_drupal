@@ -12,6 +12,13 @@ editorjs.image.upload_url:
   requirements:
     _permission: 'administer'
 
+editorjs.image.style_url:
+  path: '/admin/editorjs/style_url'
+  defaults:
+    _controller: '\Drupal\editorjs\Controller\ImageController::styleUrl'
+  requirements:
+    _permission: 'administer'
+
 editorjs.link:
   path: '/admin/editorjs/link'
   defaults:

@@ -8,5 +8,6 @@ Supported plugins:
  - [x] [Link](https://github.com/editor-js/link)
  - [x] [Table](https://github.com/editor-js/table)
  - [x] [Code](https://github.com/editor-js/code)
+ - [x] [InlineCode](https://github.com/editor-js/inline-code)
  - [x] [Delimiter](https://github.com/editor-js/delimiter)
  - [x] [image](https://github.com/editor-js/image)

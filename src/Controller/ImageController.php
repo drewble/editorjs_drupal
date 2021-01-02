@@ -138,7 +138,7 @@ class ImageController implements ContainerInjectionInterface {
     $data = Json::decode($request->getContent());
 
     /** @var \Drupal\file\Entity\File $file */
-    $file = File::load($data['file_id']);
+    $file = \Drupal::service('entity.repository')->loadEntityByUuid('file', $data['uuid']);
     if (!$file) {
       throw new BadRequestHttpException('File not found.');
     }

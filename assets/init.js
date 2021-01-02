@@ -69,7 +69,6 @@
       let items = context.querySelectorAll('.editorjs');
       items.forEach(item => {
         this.attachDependencies(settings, () => {
-
           let holder = document.createElement('div');
           holder.classList.add('editorjs_holder');
           item.parentNode.insertBefore(holder, item.nextSibling);
@@ -83,7 +82,15 @@
             logLevel: 'WARN',
             tools:  this.prepareTools(settings[item.dataset.fieldName].tools || {}),
             data: data,
-            onChange: function () {
+            onChange: function (e) {
+              // Add image style.
+              // let block = e.blocks.getBlockByIndex(e.blocks.getCurrentBlockIndex());
+              // if (block.name === 'image') {
+              //   block.save().then((data) => {
+              //     console.log(data)
+              //   })
+              // }
+
               ei.save().then((data) => {
                 item.value = JSON.stringify(data.blocks)
               }).catch((error) => {
@@ -92,7 +99,6 @@
             }
           });
         })
-
       })
     },
     /**
