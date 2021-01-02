@@ -4,9 +4,10 @@ namespace Drupal\editorjs\Controller;
 
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Entity\EntityRepositoryInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Session\AccountProxyInterface;
-use Drupal\file\Entity\File;
 use Drupal\image\Entity\ImageStyle;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -35,21 +36,53 @@ class ImageController implements ContainerInjectionInterface {
   protected $accountProxy;
 
   /**
+   * The entity repository.
+   *
+   * @var \Drupal\Core\Entity\EntityRepositoryInterface
+   */
+  protected $entityRepository;
+
+  /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
    * ImageController constructor.
    *
    * @param \Drupal\Core\File\FileSystemInterface $fileSystem
    *   The file system manager.
+   * @param \Drupal\Core\Session\AccountProxyInterface $accountProxy
+   *   The account proxy.
+   * @param \Drupal\Core\Entity\EntityRepositoryInterface $entityRepository
+   *   The entity repository.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   The entity type manager.
    */
-  public function __construct(FileSystemInterface $fileSystem, AccountProxyInterface $accountProxy) {
+  public function __construct(
+    FileSystemInterface $fileSystem,
+    AccountProxyInterface $accountProxy,
+    EntityRepositoryInterface $entityRepository,
+    EntityTypeManagerInterface $entityTypeManager
+  ) {
     $this->fileSystem = $fileSystem;
     $this->accountProxy = $accountProxy;
+    $this->entityRepository = $entityRepository;
+    $this->entityTypeManager = $entityTypeManager;
   }
 
   /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    return new static($container->get('file_system'), $container->get('current_user'));
+    return new static(
+      $container->get('file_system'),
+      $container->get('current_user'),
+      $container->get('entity.repository'),
+      $container->get('entity_type.manager')
+    );
   }
 
   /**
@@ -138,12 +171,16 @@ class ImageController implements ContainerInjectionInterface {
     $data = Json::decode($request->getContent());
 
     /** @var \Drupal\file\Entity\File $file */
-    $file = \Drupal::service('entity.repository')->loadEntityByUuid('file', $data['uuid']);
+    $file = $this->entityRepository
+      ->loadEntityByUuid('file', $data['uuid']);
     if (!$file) {
       throw new BadRequestHttpException('File not found.');
     }
     /** @var \Drupal\image\Entity\ImageStyle $image_style */
-    $image_style = ImageStyle::load($data['image_style_id']);
+    $image_style = $this
+      ->entityTypeManager
+      ->getStorage('image_style')
+      ->load($data['image_style_id']);
     if (!$image_style) {
       throw new BadRequestHttpException('Image style not found.');
     }
