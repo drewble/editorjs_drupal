@@ -52,7 +52,15 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
    */
   public static function defaultSettings() {
     return [
-      'tools' => [],
+      'tools' => [
+        'list' => [
+          'enable' => TRUE,
+          'settings' => ['inlineToolbar' => TRUE],
+        ],
+        'inline_code' => [
+          'enable' => TRUE,
+        ],
+      ],
     ] + parent::defaultSettings();
   }
 
@@ -114,7 +122,7 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
       ],
     ];
     // Save origin value.
-    $form_state->set('origin:' . $items->getName() . ':' . $delta, $items[$delta]->value);
+    $form_state->set('origin:' . $items->getName() . ':' . $delta, $items[$delta]->value );
 
     return $element;
   }

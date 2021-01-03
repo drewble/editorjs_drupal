@@ -23,7 +23,7 @@ class EditerJsFormatter extends FormatterBase {
    * {@inheritdoc}
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
-
+    $element = [];
     foreach ($items as $delta => $item) {
       $element[$delta] = [
         '#theme' => 'ce_blocks',

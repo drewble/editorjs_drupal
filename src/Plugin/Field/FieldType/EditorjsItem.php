@@ -63,8 +63,7 @@ class EditorjsItem extends MapItem {
    * {@inheritdoc}
    */
   public static function generateSampleValue(FieldDefinitionInterface $field_definition) {
-    $values['value'] = 'generateSampleValue';
-    return $values;
+    return ['value' => ''];
   }
 
   /**
@@ -81,6 +80,18 @@ class EditorjsItem extends MapItem {
         $instance->postSave($item, $this->getEntity(), $update);
       }
     }
+    return FALSE;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __get($name) {
+    if (!isset($this->values[$name])) {
+      $this->values[$name] = '';
+    }
+
+    return $this->values[$name];
   }
 
 }

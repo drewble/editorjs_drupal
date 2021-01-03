@@ -8,7 +8,6 @@ use Drupal\Core\Entity\EntityRepositoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Session\AccountProxyInterface;
-use Drupal\image\Entity\ImageStyle;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +18,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
  *
  * @see https://github.com/editor-js/image
  */
-class ImageController implements ContainerInjectionInterface {
+final class ImageController implements ContainerInjectionInterface {
 
   /**
    * The file system manager.

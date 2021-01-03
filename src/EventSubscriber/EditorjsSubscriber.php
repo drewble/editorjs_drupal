@@ -74,9 +74,9 @@ class EditorjsSubscriber implements EventSubscriberInterface {
   public function processDifferenceValues(MassageValuesEvent $event) {
     foreach ($event->getNewValues() as $delta => $item) {
       $origin_delta = $item['_original_delta'] ?? $delta;
-      $value = Json::decode($item['value'] ?? '');
+      $value = Json::decode($item['value']) ?? [];
       $origin_value = $event->getOriginValueByDelta($origin_delta);
-      $origin_value = Json::decode($origin_value ?? '');
+      $origin_value = Json::decode($origin_value) ?? [];
 
       $diff = DiffArray::diffAssocRecursive($origin_value, $value);
       if (empty($diff)) {
