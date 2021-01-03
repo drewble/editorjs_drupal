@@ -60,6 +60,9 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
         'inline_code' => [
           'enable' => TRUE,
         ],
+        'header' => [
+          'enable' => TRUE,
+        ],
       ],
     ] + parent::defaultSettings();
   }
