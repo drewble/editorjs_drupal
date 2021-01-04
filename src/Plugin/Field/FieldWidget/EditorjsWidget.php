@@ -60,6 +60,11 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
         ],
         'header' => [
           'enable' => TRUE,
+          'settings' => [
+            'placeholder' => t('Enter a header'),
+            'levels' => [2, 3, 4, 5],
+            'defaultLevel' => 2,
+          ],
         ],
       ],
     ] + parent::defaultSettings();

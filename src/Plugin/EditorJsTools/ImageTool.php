@@ -3,7 +3,6 @@
 namespace Drupal\editorjs\Plugin\EditorjsTools;
 
 use Drupal\Core\Entity\FieldableEntityInterface;
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\editorjs\EditorJsToolsPluginBase;
 use Drupal\file\Plugin\Field\FieldType\FileItem;
