@@ -2,6 +2,7 @@
 
 namespace Drupal\editorjs\Plugin\Field\FieldWidget;
 
+use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -52,14 +53,14 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
     return [
       'tools' => [
         'list' => [
-          'enable' => TRUE,
+          'status' => TRUE,
           'settings' => ['inlineToolbar' => TRUE],
         ],
         'inline_code' => [
-          'enable' => TRUE,
+          'status' => TRUE,
         ],
         'header' => [
-          'enable' => TRUE,
+          'status' => TRUE,
           'settings' => [
             'placeholder' => t('Enter a header'),
             'levels' => [2, 3, 4, 5],
@@ -83,11 +84,11 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
       $tool_settings = $settings['tools'][$plugin_id] ?? [];
       /** @var \Drupal\editorjs\EditorJsToolsInterface $instance */
       $instance = $this->toolsManager->createInstance($plugin_id);
-      $element['tools'][$plugin_id]['enable'] = [
+      $element['tools'][$plugin_id]['status'] = [
         '#type' => 'checkbox',
         '#title' => $instance->label(),
         '#description' => $instance->description(),
-        '#default_value' => $tool_settings['enable'] ?? FALSE,
+        '#default_value' => $tool_settings['status'] ?? FALSE,
       ];
       $visible_name = "fields[{$this->fieldDefinition->getName()}][settings_edit_form][settings][tools][{$plugin_id}][enable]";
       $element['tools'][$plugin_id]['settings'] = [
@@ -140,7 +141,7 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
   public function settingsSummary() {
     $summary = [$this->t('Enabled tools:')];
     foreach ($this->getSetting('tools') as $plugin_id => $tool) {
-      if (empty($tool['enable'])) {
+      if (empty($tool['status'])) {
         continue;
       }
       $def = $this->toolsManager->getDefinition($plugin_id, FALSE);
@@ -171,7 +172,7 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
     }
     // Getting only enabled tools.
     foreach ($settings['tools'] as $plugin_id => &$tool) {
-      if ($tool['enable']) {
+      if ($tool['status']) {
         /** @var \Drupal\editorjs\EditorJsToolsInterface $instance */
         $instance = $this->toolsManager->createInstance($plugin_id);
         $tool = $instance->prepareSettings($tool['settings'] ?? []);
@@ -198,5 +199,22 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
     return parent::massageFormValues($event->getNewValues(), $form, $form_state);
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function calculateDependencies() {
+    $dependencies = parent::calculateDependencies();
+    foreach ($this->getSetting('tools') ?? [] as $id => $tool) {
+      if (empty($tool['status'])) {
+        continue;
+      }
+      $def = $this->toolsManager->getDefinition($id);
+      if (in_array($def['provider'], $dependencies['module'] ?? [])) {
+        continue;
+      }
+      $dependencies['module'][] = $def['provider'];
+    }
+    return $dependencies;
+  }
 
 }
