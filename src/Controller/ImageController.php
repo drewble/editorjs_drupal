@@ -3,11 +3,20 @@
 namespace Drupal\editorjs\Controller;
 
 use Drupal\Component\Serialization\Json;
+use Drupal\Component\Utility\Bytes;
+use Drupal\Component\Utility\Environment;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityRepositoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\File\Exception\FileException;
 use Drupal\Core\File\FileSystemInterface;
+use Drupal\Core\Logger\LoggerChannelFactoryInterface;
+use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Session\AccountProxyInterface;
+use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\file\Entity\File;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,9 +25,11 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 /**
  * Defines controller for image plugin.
  *
- * @see https://github.com/editor-js/image
+ * @see https://github.com/batkor/editorjs-dimage
  */
 final class ImageController implements ContainerInjectionInterface {
+
+  use StringTranslationTrait;
 
   /**
    * The file system manager.
@@ -49,6 +60,34 @@ final class ImageController implements ContainerInjectionInterface {
   protected $entityTypeManager;
 
   /**
+   * The stream wrapper manager.
+   *
+   * @var \Drupal\Core\StreamWrapper\StreamWrapperManagerInterface
+   */
+  protected $streamWrapperManager;
+
+  /**
+   * The config factory.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected $configFactory;
+
+  /**
+   * The logger factory.
+   *
+   * @var \Drupal\Core\Logger\LoggerChannelFactoryInterface
+   */
+  protected $loggerChannelFactory;
+
+  /**
+   * The messenger.
+   *
+   * @var \Drupal\Core\Messenger\MessengerInterface
+   */
+  protected $messenger;
+
+  /**
    * ImageController constructor.
    *
    * @param \Drupal\Core\File\FileSystemInterface $fileSystem
@@ -59,17 +98,33 @@ final class ImageController implements ContainerInjectionInterface {
    *   The entity repository.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   The entity type manager.
+   * @param \Drupal\Core\StreamWrapper\StreamWrapperManagerInterface $streamWrapperManager
+   *   The stream wrapper manager.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
+   *   The config factory.
+   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $loggerChannelFactory
+   *   The logger factory.
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
+   *   The messenger.
    */
   public function __construct(
     FileSystemInterface $fileSystem,
     AccountProxyInterface $accountProxy,
     EntityRepositoryInterface $entityRepository,
-    EntityTypeManagerInterface $entityTypeManager
+    EntityTypeManagerInterface $entityTypeManager,
+    StreamWrapperManagerInterface $streamWrapperManager,
+    ConfigFactoryInterface $configFactory,
+    LoggerChannelFactoryInterface $loggerChannelFactory,
+    MessengerInterface $messenger
   ) {
     $this->fileSystem = $fileSystem;
     $this->accountProxy = $accountProxy;
     $this->entityRepository = $entityRepository;
     $this->entityTypeManager = $entityTypeManager;
+    $this->streamWrapperManager = $streamWrapperManager;
+    $this->configFactory = $configFactory;
+    $this->loggerChannelFactory = $loggerChannelFactory;
+    $this->messenger = $messenger;
   }
 
   /**
@@ -80,7 +135,11 @@ final class ImageController implements ContainerInjectionInterface {
       $container->get('file_system'),
       $container->get('current_user'),
       $container->get('entity.repository'),
-      $container->get('entity_type.manager')
+      $container->get('entity_type.manager'),
+      $container->get('stream_wrapper_manager'),
+      $container->get('config.factory'),
+      $container->get('logger.factory'),
+      $container->get('messenger')
     );
   }
 
@@ -101,12 +160,14 @@ final class ImageController implements ContainerInjectionInterface {
     if (!$uploadFile) {
       throw new BadRequestHttpException();
     }
-    $openFile = $uploadFile->openFile();
-    $openFile = $openFile->fread($openFile->getSize());
-    if ($openFile === FALSE) {
-      return new JsonResponse(['success' => FALSE]);
-    }
-    $file = $this->saveData($openFile, 'public://' . $uploadFile->getClientOriginalName());
+
+    // There is always a file size limit due to the PHP server limit.
+    $validators = [
+      'file_validate_extensions' => [$this->allowExtension($request)],
+      'file_validate_size' => [Bytes::toNumber(Environment::getUploadMaxSize())],
+    ];
+
+    $file = _file_save_upload_single($uploadFile, 'image', $validators, 'public://');
     if (!$file) {
       return new JsonResponse(['success' => FALSE]);
     }
@@ -141,7 +202,13 @@ final class ImageController implements ContainerInjectionInterface {
     if ($data == FALSE) {
       return new JsonResponse(['success' => FALSE]);
     }
-    $file = $this->saveData($data, 'public://' . basename($url));
+
+    $validators = [
+      'file_validate_extensions' => [$this->allowExtension($request)],
+      'file_validate_size' => [Bytes::toNumber(Environment::getUploadMaxSize())],
+    ];
+    
+    $file = $this->saveData($data, 'public://' . basename($url), $validators);
     if (!$file) {
       return new JsonResponse(['success' => FALSE]);
     }
@@ -196,26 +263,80 @@ final class ImageController implements ContainerInjectionInterface {
    *   A string containing the contents of the file.
    * @param string $destination
    *   A string containing the destination URI.
+   * @param array $validators
+   *   The callback list for validate.
    * @param int $replace
    *   The replace behavior when the destination file already exists.
    *
    * @return \Drupal\file\FileInterface|false
    *   The file entity elsa false.
    *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    * @throws \Drupal\Core\Entity\EntityStorageException
-   *
-   * @todo Not use 'file_save_data' function or leave as is?
    */
-  protected function saveData($data, $destination, $replace = FileSystemInterface::EXISTS_REPLACE) {
-    $file = file_save_data($data, $destination, $replace);
-    if (!$file) {
+  protected function saveData($data, $destination, array $validators = [], $replace = FileSystemInterface::EXISTS_REPLACE) {
+    if (empty($destination)) {
+      $destination = $this->configFactory->get('system.file')->get('default_scheme') . '://';
+    }
+    if (!$this->streamWrapperManager->isValidUri($destination)) {
+      $this->loggerChannelFactory->get('file')->notice('The data could not be saved because the destination %destination is invalid. This may be caused by improper use of file_save_data() or a missing stream wrapper.', ['%destination' => $destination]);
+      $this->messenger->addError($this->t('The data could not be saved because the destination is invalid. More information is available in the system log.'));
       return FALSE;
     }
-    // Set permanent status after save parent entity.
-    $file->setTemporary();
-    $file->save();
 
-    return $file;
+    try {
+      $uri = $this->fileSystem->saveData($data, $destination, $replace);
+      /** @var \Drupal\file\Entity\File $file */
+      $file = File::create([
+        'uri' => $uri,
+        'uid' => $this->accountProxy->id(),
+        'status' => 0,
+      ]);
+      // If we are replacing an existing file re-use its database record.
+      // @todo Do not create a new entity in order to update it. See
+      //   https://www.drupal.org/node/2241865.
+      if ($replace == FileSystemInterface::EXISTS_REPLACE) {
+        $existing_files = $this->entityTypeManager->getStorage('file')->loadByProperties(['uri' => $uri]);
+        if (count($existing_files)) {
+          $existing = reset($existing_files);
+          $file->fid = $existing->id();
+          $file->setOriginalId($existing->id());
+          $file->setFilename($existing->getFilename());
+        }
+      }
+      // If we are renaming around an existing file (rather than a directory),
+      // use its basename for the filename.
+      elseif ($replace == FileSystemInterface::EXISTS_RENAME && is_file($destination)) {
+        $file->setFilename($this->fileSystem->basename($destination));
+      }
+
+      $errors = file_validate($file, $validators);
+      if (!empty($errors)) {
+        foreach ($errors as $error) {
+          $this->messenger->addError($error);
+        }
+        return FALSE;
+      }
+      $file->save();
+      return $file;
+    }
+    catch (FileException $e) {
+      return FALSE;
+    }
+  }
+
+  /**
+   * Returns allow extension from request.
+   *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The request.
+   *
+   * @return string
+   *   The allow extensions list.
+   */
+  protected function allowExtension(Request $request) {
+    return $request->headers->get('allow-extensions', 'png gif jpg jpeg');
   }
 
 }

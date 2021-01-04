@@ -80,17 +80,9 @@
             autofocus: true,
             holder: holder,
             logLevel: 'WARN',
-            tools:  this.prepareTools(settings[item.dataset.fieldName].tools || {}),
+            tools: this.prepareTools(settings[item.dataset.fieldName].tools || {}),
             data: data,
-            onChange: function (e) {
-              // Add image style.
-              // let block = e.blocks.getBlockByIndex(e.blocks.getCurrentBlockIndex());
-              // if (block.name === 'image') {
-              //   block.save().then((data) => {
-              //     console.log(data)
-              //   })
-              // }
-
+            onChange: function () {
               ei.save().then((data) => {
                 item.value = JSON.stringify(data.blocks)
               }).catch((error) => {

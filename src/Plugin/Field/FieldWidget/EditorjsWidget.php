@@ -2,8 +2,6 @@
 
 namespace Drupal\editorjs\Plugin\Field\FieldWidget;
 
-use Drupal\Component\Serialization\Json;
-use Drupal\Component\Utility\DiffArray;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -90,6 +88,7 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
       $element['tools'][$plugin_id]['settings'] = [
         '#type' => 'details',
         '#title' => $this->t('Settings'),
+        '#tree' => TRUE,
         '#states' => [
           'visible' => [
             ':input[name="' . $visible_name . '"]' => ['checked' => TRUE],
@@ -125,7 +124,7 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
       ],
     ];
     // Save origin value.
-    $form_state->set('origin:' . $items->getName() . ':' . $delta, $items[$delta]->value );
+    $form_state->set('origin:' . $items->getName() . ':' . $delta, $items[$delta]->value);
 
     return $element;
   }

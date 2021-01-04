@@ -26,32 +26,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * )
  */
 class EditorjsItem extends MapItem {
-
-  // @todo add settings to image tool plugin.
-    //$element['image']['enable'] = [
-    //  '#type' => 'checkbox',
-    //  '#title' => $this->t('Image plugin'),
-    //  '#default_value' => $settings['image']['enable'],
-    //];
-    //
-    //$element['image']['file_extensions'] = [
-    //  '#type' => 'textfield',
-    //  '#title' => $this->t('Allowed file extensions'),
-    //  '#default_value' => $settings['image']['file_extensions'],
-    //  '#description' => $this->t('Separate extensions with a space or comma and do not include the leading dot.'),
-    //  '#element_validate' => [[FileItem::class, 'validateExtensions']],
-    //  '#weight' => 1,
-    //  '#maxlength' => 256,
-    //  '#states' => [
-    //    'visible' => [
-    //      ':input[name="settings[image][enable]"]' => ['checked' => TRUE],
-    //    ],
-    //    'required' => [
-    //      ':input[name="settings[image][enable]"]' => ['checked' => TRUE],
-    //    ],
-    //  ],
-    //];
-
+  
   /**
    * {@inheritdoc}
    */

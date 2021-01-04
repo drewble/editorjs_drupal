@@ -2,11 +2,11 @@
 
 namespace Drupal\editorjs\Plugin\EditorjsTools;
 
-use Drupal\Core\Access\CsrfRequestHeaderAccessCheck;
 use Drupal\Core\Entity\FieldableEntityInterface;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\editorjs\EditorJsToolsPluginBase;
-use Drupal\file\Entity\File;
+use Drupal\file\Plugin\Field\FieldType\FileItem;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -51,6 +51,14 @@ class ImageTool extends EditorJsToolsPluginBase implements ContainerFactoryPlugi
   public function settingsForm(array $settings = []) {
     $elements = [];
 
+    $elements['headers']['allow-extensions'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Allowed file extensions'),
+      '#default_value' => $settings['headers']['allow-extensions'] ?? 'png gif jpg jpeg',
+      '#description' => $this->t('Separate extensions with a space or comma and do not include the leading dot.'),
+      '#element_validate' => [[FileItem::class, 'validateExtensions']],
+    ];
+
     $elements['endpoints']['byFile'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Endpoint for upload'),
@@ -62,7 +70,7 @@ class ImageTool extends EditorJsToolsPluginBase implements ContainerFactoryPlugi
       '#type' => 'textfield',
       '#title' => $this->t('Endpoint for upload by url'),
       '#description' => $this->t('Your endpoint that provides uploading by Url.'),
-      '#default_value' => $settings['endpoints']['byUrl'] ?? '/admin/editorjs/fetch',
+      '#default_value' => $settings['endpoints']['byUrl'] ?? '/admin/editorjs/upload_url',
     ];
 
     $elements['endpoints']['fetchStyleUrl'] = [
@@ -86,12 +94,12 @@ class ImageTool extends EditorJsToolsPluginBase implements ContainerFactoryPlugi
    * {@inheritdoc}
    */
   public function prepareSettings($settings) {
-    return [
-      'config' => [
-        'endpoints' => $settings['endpoints'],
-        'image_styles' => image_style_options(),
-      ],
+    $output['config'] = [
+      'image_styles' => image_style_options(),
     ];
+    $output['config']['additionalRequestHeaders'] = $settings['headers'];
+    $output['config']['endpoints'] = $settings['endpoints'];
+    return $output;
   }
 
   /**
