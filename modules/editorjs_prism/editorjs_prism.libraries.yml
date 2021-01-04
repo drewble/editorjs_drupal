@@ -1,0 +1,33 @@
+core:
+  js:
+    /libraries/prismjs/prism.js: {}
+    /libraries/prismjs/components/prism-markup-templating.min.js: {}
+    /libraries/prismjs/plugins/normalize-whitespace/prism-normalize-whitespace.min.js: {}
+  css:
+    component:
+      /libraries/prismjs/themes/prism-okaidia.css: {}
+
+php:
+  js:
+    /libraries/prismjs/components/prism-php.min.js: {}
+  dependencies:
+    - editorjs_prism/core
+
+css:
+  js:
+    /libraries/prismjs/components/prism-css.min.js: {}
+  dependencies:
+    - editorjs_prism/core
+
+js:
+  js:
+    /libraries/prismjs/components/prism-clike.min.js: {}
+    /libraries/prismjs/components/prism-javascript.min.js: {}
+  dependencies:
+    - editorjs_prism/core
+
+twig:
+  js:
+    /libraries/prismjs/components/prism-twig.min.js: {}
+  dependencies:
+    - editorjs_prism/core

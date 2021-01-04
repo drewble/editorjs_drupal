@@ -1,0 +1,27 @@
+{
+    "name": "drupal/editorjs_prism",
+    "type": "drupal-module",
+    "description": "This module provides code plugin for EditorJs supprotes PrismJs.",
+    "require": {
+        "batkor/editorjs-code-lang": "^1.0",
+        "npm-asset/prismjs": "^1.22"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "batkor/editorjs-code-lang",
+                "type": "drupal-library",
+                "version": "1.0.1",
+                "dist": {
+                    "url": "https://github.com/batkor/editorjs-code-lang/archive/1.0.1.zip",
+                    "type": "zip"
+                }
+            }
+        }
+    ]
+}

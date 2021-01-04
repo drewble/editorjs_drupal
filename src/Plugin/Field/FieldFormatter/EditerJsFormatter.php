@@ -28,6 +28,11 @@ class EditerJsFormatter extends FormatterBase {
       $element[$delta] = [
         '#theme' => 'ce_blocks',
       ] + $this->prepareValue($item->value);
+      $element[$delta]['#cache'] = [
+        'contexts' => $items->getEntity()->getCacheContexts(),
+        'tags' => $items->getEntity()->getCacheTagsToInvalidate(),
+        'max-age' => $items->getEntity()->getCacheMaxAge(),
+      ];
     }
 
     return $element;

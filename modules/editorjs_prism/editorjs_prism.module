@@ -1,0 +1,29 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for "editorjs_prism" module.
+ */
+
+/**
+ * Implements hook_theme().
+ */
+function editorjs_prism_theme() {
+  return [
+    'ce_block__prism_code' => [
+      'base hook' => 'ce_block',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ *
+ * Prepare variables for "ce_block__prism_code" template.
+ */
+function template_preprocess_ce_block__prism_code(&$variables) {
+  $code = $variables['data']['languageCode'] ?? FALSE;
+  if ($code) {
+    $variables['#attached']['library'][] = "editorjs_prism/{$code}";
+  }
+}

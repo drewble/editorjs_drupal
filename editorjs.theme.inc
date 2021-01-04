@@ -6,7 +6,6 @@
  */
 
 use Drupal\Core\Render\Element;
-use Drupal\image\Entity\ImageStyle;
 
 /**
  * Implements hook_preprocess_HOOK().
