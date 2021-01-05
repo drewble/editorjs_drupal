@@ -1,7 +1,7 @@
 <div class="ce-block__content">
   <ul class="cdx-list cdx-list--{{ data.style }}">
     {% for item in data.items %}
-      <li class="cdx-list__item">{{ item }}</li>
+      <li class="cdx-list__item">{{ item|raw }}</li>
     {% endfor %}
   </ul>
 </div>

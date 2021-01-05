@@ -4,14 +4,9 @@ namespace Drupal\editorjs\Plugin\Field\FieldType;
 
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Field\Plugin\Field\FieldType\MapItem;
-use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Link;
-use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
-use Drupal\Core\Url;
-use Drupal\file\Entity\File;
-use Drupal\file\Plugin\Field\FieldType\FileItem;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\TypedData\DataDefinition;
 
 /**
  * Defines the 'editorjs' field type.
@@ -26,7 +21,17 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * )
  */
 class EditorjsItem extends MapItem {
-  
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
+    $properties['value'] = DataDefinition::create('string')
+      ->setLabel(t('Encode value'));
+
+    return $properties;
+  }
+
   /**
    * {@inheritdoc}
    */
