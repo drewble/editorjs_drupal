@@ -1,0 +1,124 @@
+field.widget.settings.editorjs:
+  type: mapping
+  label: 'EditorJs widget settings'
+  mapping:
+    tools:
+      type: sequence
+      label: 'EditorJs settings tools'
+      sequence:
+        type: 'editorjs.widget.tool.[%key]'
+
+editorjs.widget.tool.*:
+  type: mapping
+  label: 'Tool configuration'
+  mapping:
+    status:
+      type: boolean
+      label: 'Status'
+
+editorjs.widget.tool.settings.inlineToolbar:
+  type: boolean
+  label: 'The inline Toolbar status'
+
+editorjs.widget.tool.linkTool:
+  type: editorjs.widget.tool.*
+  label: 'Link tool settings'
+  mapping:
+    settings:
+      type: mapping
+      mapping:
+        endpoint:
+          type: string
+          label: 'Endpoint'
+
+editorjs.widget.tool.code:
+  type: editorjs.widget.tool.*
+  label: 'Code tool settings'
+  mapping:
+    settings:
+      type: mapping
+      mapping:
+        placeholder:
+          type: string
+          label: 'Placeholder'
+
+editorjs.widget.tool.list:
+  type: editorjs.widget.tool.*
+  label: 'List tool settings'
+  mapping:
+    settings:
+      type: mapping
+      mapping:
+        inlineToolbar:
+          type: editorjs.widget.tool.settings.inlineToolbar
+
+editorjs.widget.tool.table:
+  type: editorjs.widget.tool.*
+  label: 'Table tool settings'
+  mapping:
+    settings:
+      type: mapping
+      mapping:
+        inlineToolbar:
+          type: editorjs.widget.tool.settings.inlineToolbar
+        rows:
+          type: integer
+          label: 'The rows count'
+        cols:
+          type: integer
+          label: 'The cols count'
+
+editorjs.widget.tool.header:
+  type: editorjs.widget.tool.*
+  label: 'Header tool settings'
+  mapping:
+    settings:
+      type: mapping
+      mapping:
+        placeholder:
+          type: string
+          label: 'Placeholder'
+        levels:
+          type: sequence
+          label: 'Levels'
+          sequence:
+            type: integer
+        defaultLevel:
+          type: integer
+          label: 'Default level'
+
+editorjs.widget.tool.image:
+  type: editorjs.widget.tool.*
+  label: 'Image tool settings'
+  mapping:
+    settings:
+      type: mapping
+      mapping:
+        headers:
+          type: mapping
+          mapping:
+            allow-extensions:
+              type: string
+              label: 'Allowed file extensions'
+        endpoints:
+          type: mapping
+          mapping:
+            byFile:
+              type: string
+              label: 'Endpoint for upload'
+            byUrl:
+              type: string
+              label: 'Endpoint for upload by url'
+            fetchStyleUrl:
+              type: string
+              label: 'Fetch image style url'
+
+editorjs.widget.tool.checklist:
+  type: editorjs.widget.tool.*
+  label: 'Checklist code tool settings'
+  mapping:
+    settings:
+      type: mapping
+      mapping:
+        inlineToolbar:
+          type: editorjs.widget.tool.settings.inlineToolbar

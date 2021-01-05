@@ -1,0 +1,13 @@
+editorjs.widget.tool.prism_code:
+  type: editorjs.widget.tool.*
+  label: 'PrismJs code tool settings'
+  mapping:
+    settings:
+      type: mapping
+      mapping:
+        placeholder:
+          type: string
+          label: 'Placeholder'
+        languages:
+          type: string
+          label: 'Language list.'

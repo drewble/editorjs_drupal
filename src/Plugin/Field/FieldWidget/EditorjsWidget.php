@@ -2,7 +2,6 @@
 
 namespace Drupal\editorjs\Plugin\Field\FieldWidget;
 
-use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
