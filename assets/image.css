@@ -13,6 +13,12 @@
   background: #cdd1e0;
 }
 
+.image-tool--center .image-tool__image{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .image-tool__image-picture {
   max-width: 100%;
   vertical-align: bottom;

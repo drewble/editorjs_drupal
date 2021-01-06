@@ -10,4 +10,5 @@ Supported plugins:
  - [x] [Code](https://github.com/editor-js/code)
  - [x] [InlineCode](https://github.com/editor-js/inline-code)
  - [x] [Delimiter](https://github.com/editor-js/delimiter)
- - [x] [image](https://github.com/editor-js/image)
+ - [x] [image](https://github.com/batkor/editorjs-dimage)
+ - [x] [Code PrismJs](https://github.com/batkor/editorjs-code-lang)

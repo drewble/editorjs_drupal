@@ -35,12 +35,20 @@ class ImageTool extends EditorJsToolsPluginBase implements ContainerFactoryPlugi
   protected $fileUsage;
 
   /**
+   * The module manager.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     $instance = new static($configuration, $plugin_id, $plugin_definition);
     $instance->entityRepository = $container->get('entity.repository');
     $instance->fileUsage = $container->get('file.usage');
+    $instance->moduleHandler = $container->get('module_handler');
     return $instance;
   }
 
@@ -93,9 +101,12 @@ class ImageTool extends EditorJsToolsPluginBase implements ContainerFactoryPlugi
    * {@inheritdoc}
    */
   public function prepareSettings($settings) {
-    $output['config'] = [
-      'image_styles' => image_style_options(),
-    ];
+    if ($this->moduleHandler->moduleExists('image')) {
+      $output['config'] = [
+        'image_styles' => image_style_options(),
+      ];
+    }
+
     $output['config']['additionalRequestHeaders'] = $settings['headers'];
     $output['config']['endpoints'] = $settings['endpoints'];
     return $output;
