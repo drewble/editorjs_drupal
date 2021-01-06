@@ -122,3 +122,16 @@ editorjs.widget.tool.checklist:
       mapping:
         inlineToolbar:
           type: editorjs.widget.tool.settings.inlineToolbar
+
+field.formatter.settings.editorjs_default:
+  type: mapping
+  label: 'EditerJs formatter settings'
+  mapping:
+    negate:
+      type: boolean
+      label: 'The negate status'
+    tools:
+      type: sequence
+      label: 'Tools for show or hide'
+      sequence:
+        type: integer

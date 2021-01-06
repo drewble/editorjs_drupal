@@ -80,6 +80,9 @@ class EditerJsFormatter extends FormatterBase {
   public function viewElements(FieldItemListInterface $items, $langcode) {
     $element = [];
     foreach ($items as $delta => $item) {
+      if (empty($item->value)) {
+        continue;
+      }
       $element[$delta] = [
         '#theme' => 'ce_blocks',
       ] + $this->prepareValue($item->value);

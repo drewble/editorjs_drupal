@@ -52,7 +52,7 @@ class EditorjsItem extends MapItem {
   public function postSave($update) {
     /** @var \Drupal\editorjs\EditorJsToolsPluginManager $manager */
     $manager = \Drupal::service('plugin.manager.editorjs_tools');
-    $value = Json::decode($this->values['value'] ?? '');
+    $value = Json::decode($this->values['value']) ?? [];
     foreach ($value as $item) {
       if ($manager->hasDefinition($item['type'])) {
         /** @var \Drupal\editorjs\EditorJsToolsInterface $instance */

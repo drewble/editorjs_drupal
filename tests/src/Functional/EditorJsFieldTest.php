@@ -2,6 +2,8 @@
 
 namespace Drupal\Tests\editorjs\Functional;
 
+use Drupal\Component\Serialization\Json;
+use Drupal\entity_test\Entity\EntityTest;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\Tests\BrowserTestBase;
@@ -90,7 +92,7 @@ class EditorJsFieldTest extends BrowserTestBase {
       ->save();
 
     $display_repository->getViewDisplay('node', 'article')
-      ->setComponent('field_telephone', [
+      ->setComponent('field_editorjs', [
         'type' => 'editorjs_default',
         'weight' => 1,
         'settings' => [
@@ -101,8 +103,30 @@ class EditorJsFieldTest extends BrowserTestBase {
 
   }
 
+  /**
+   * Tests "editorjs" field widget.
+   */
   public function testFieldWidget() {
     $this->drupalGet('node/add/article');
+    $field_editorjs = $this->assertSession()->hiddenFieldExists('field_editorjs[0][value]');
+
+    $value = $this->randomString();
+    $field_editorjs_value = Json::encode([
+      [
+        'type' => 'paragraph',
+        'data' => [
+          'text' => $value,
+        ],
+      ],
+    ]);
+    $field_editorjs->setValue($field_editorjs_value);
+    $title = $this->randomString();
+    $edit = [
+      'title[0][value]' => $title,
+    ];
+
+    $this->submitForm($edit, 'Save');
+    $this->assertSession()->pageTextContains($value);
   }
 
 }
