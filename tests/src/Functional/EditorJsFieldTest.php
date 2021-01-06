@@ -2,18 +2,19 @@
 
 namespace Drupal\Tests\editorjs\Functional;
 
-use Drupal\Component\Serialization\Json;
-use Drupal\entity_test\Entity\EntityTest;
-use Drupal\field\Entity\FieldConfig;
-use Drupal\field\Entity\FieldStorageConfig;
-use Drupal\Tests\BrowserTestBase;
+use Drupal\file\Entity\File;
+use Drupal\Tests\TestFileCreationTrait;
 
 /**
- * Tests the creation of 'editorjs' fields.
+ * Tests for the 'editorjs' field.
  *
- * @group telephone
+ * @group editorjs
  */
-class EditorJsFieldTest extends BrowserTestBase {
+class EditorJsFieldTest extends EditorJsFieldTestBase {
+
+  use TestFileCreationTrait {
+    getTestFiles as drupalGetTestFiles;
+  }
 
   /**
    * Modules to enable.
@@ -44,26 +45,6 @@ class EditorJsFieldTest extends BrowserTestBase {
   protected function setUp(): void {
     parent::setUp();
 
-    $this->drupalCreateContentType(['type' => 'article']);
-    $this->webUser = $this->drupalCreateUser([
-      'create article content',
-      'edit own article content',
-    ]);
-    $this->drupalLogin($this->webUser);
-
-    // Add the 'editorjs' field to the article content type.
-    FieldStorageConfig::create([
-      'field_name' => 'field_editorjs',
-      'entity_type' => 'node',
-      'type' => 'editorjs',
-    ])->save();
-    FieldConfig::create([
-      'field_name' => 'field_editorjs',
-      'label' => 'EditorJs',
-      'entity_type' => 'node',
-      'bundle' => 'article',
-    ])->save();
-
     /** @var \Drupal\Core\Entity\EntityDisplayRepositoryInterface $display_repository */
     $display_repository = \Drupal::service('entity_display.repository');
     $display_repository->getFormDisplay('node', 'article')
@@ -71,6 +52,10 @@ class EditorJsFieldTest extends BrowserTestBase {
         'type' => 'editorjs',
         'settings' => [
           'tools' => [
+            'checklist' => [
+              'status' => TRUE,
+              'settings' => ['inlineToolbar' => TRUE],
+            ],
             'list' => [
               'status' => TRUE,
               'settings' => ['inlineToolbar' => TRUE],
@@ -85,6 +70,28 @@ class EditorJsFieldTest extends BrowserTestBase {
                 'levels' => [2, 3, 4, 5],
                 'defaultLevel' => 2,
               ],
+            ],
+            'code' => [
+              'status' => TRUE,
+              'settings' => ['placeholder' => 'Enter a code'],
+            ],
+            'delimiter' => [
+              'status' => TRUE,
+            ],
+            'image' => [
+              'status' => TRUE,
+              'settings' => [
+                'headers' => [],
+                'endpoints' => [],
+              ],
+            ],
+            'linkTool' => [
+              'status' => TRUE,
+              'settings' => ['endpoint' => ''],
+            ],
+            'table' => [
+              'status' => TRUE,
+              'settings' => ['inlineToolbar' => TRUE, 'rows' => 2, 'cols' => 2],
             ],
           ],
         ],
@@ -104,29 +111,128 @@ class EditorJsFieldTest extends BrowserTestBase {
   }
 
   /**
-   * Tests "editorjs" field widget.
+   * Tests "editorjs" field "paragraph" tool.
    */
-  public function testFieldWidget() {
-    $this->drupalGet('node/add/article');
-    $field_editorjs = $this->assertSession()->hiddenFieldExists('field_editorjs[0][value]');
+  public function testParagraphTool() {
+    $this->toolTest([
+      'type' => 'paragraph',
+      'data' => [
+        'text' => $this->randomString(),
+      ],
+    ], '<p class="ce-paragraph">');
+  }
 
-    $value = $this->randomString();
-    $field_editorjs_value = Json::encode([
-      [
-        'type' => 'paragraph',
-        'data' => [
-          'text' => $value,
+  /**
+   * Tests "editorjs" field "checklist" tool.
+   */
+  public function testCheckListTool() {
+    $this->toolTest([
+      'type' => 'checklist',
+      'data' => [
+        'items' => [
+          ['text' => $this->randomString(), 'checked' => TRUE],
         ],
       ],
-    ]);
-    $field_editorjs->setValue($field_editorjs_value);
-    $title = $this->randomString();
-    $edit = [
-      'title[0][value]' => $title,
-    ];
+    ], '<div class="ce-block__content cdx-checklist">');
+  }
 
-    $this->submitForm($edit, 'Save');
-    $this->assertSession()->pageTextContains($value);
+  /**
+   * Tests "editorjs" field "list" tool.
+   */
+  public function testListTool() {
+    $this->toolTest([
+      'type' => 'list',
+      'data' => [
+        'style' => 'unordered',
+        'items' => [$this->randomString()],
+      ],
+    ], '<ul class="cdx-list');
+  }
+
+  /**
+   * Tests "editorjs" field "header" tool.
+   */
+  public function testHeaderTool() {
+    $this->toolTest([
+      'type' => 'header',
+      'data' => [
+        'text' => $this->randomString(),
+        'level' => 2,
+      ],
+    ], '<h2 class="ce-block__content">');
+  }
+
+  /**
+   * Tests "editorjs" field "code" tool.
+   */
+  public function testCodeTool() {
+    $value = 'public function testCodeTool() {}';
+    $this->toolTest([
+      'type' => 'code',
+      'data' => [
+        'code' => $value,
+      ],
+    ], '<code class="ce-code">' . $value . '</code>');
+  }
+
+  /**
+   * Tests "editorjs" field "delimiter" tool.
+   */
+  public function testDelimiterTool() {
+    $this->toolTest([
+      'type' => 'delimiter',
+      'data' => [],
+    ], '<div class="ce-block__content ce-delimiter"></div>');
+  }
+
+  /**
+   * Tests "editorjs" field "linkTool" tool.
+   */
+  public function testLinkToolTool() {
+    $this->toolTest([
+      'type' => 'linkTool',
+      'data' => [
+        'link' => 'https://www.drupal.org/',
+        'meta' => [
+          'title' => 'Drupal',
+          'description' => 'Drupal is an open source platform for building amazing digital experiences.',
+        ],
+      ],
+    ], '<div class="link-tool ce-block__content">');
+  }
+
+  /**
+   * Tests "editorjs" field "table" tool.
+   */
+  public function testTableTool() {
+    $this->toolTest([
+      'type' => 'table',
+      'data' => [
+        'content' => [
+          [$this->randomString(), $this->randomString()],
+          [$this->randomString(), $this->randomString()],
+        ],
+      ],
+    ], '<div class="ce-block__content ce-table__wrap">');
+  }
+
+  /**
+   * Tests "editorjs" field "image" tool.
+   */
+  public function testImageTool() {
+    $image = current($this->drupalGetTestFiles('image'));
+    /** @var \Drupal\file\Entity\File $file */
+    $file = File::create((array) $image);
+    $file->save();
+    $this->toolTest([
+      'type' => 'image',
+      'data' => [
+        'file' => [
+          'url' => $file->createFileUrl(),
+          'uuid' => $file->uuid(),
+        ],
+      ],
+    ], '<div class="image-tool__image">');
   }
 
 }
