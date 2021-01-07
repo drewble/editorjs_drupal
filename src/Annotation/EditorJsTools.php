@@ -43,4 +43,11 @@ class EditorjsTools extends Plugin {
    */
   public $implementer;
 
+  /**
+   * The (optional) permission needed to use a tool.
+   *
+   * @var string
+   */
+  public $permission;
+
 }

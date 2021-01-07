@@ -23,13 +23,6 @@ editorjs.widget.tool.settings.inlineToolbar:
 editorjs.widget.tool.linkTool:
   type: editorjs.widget.tool.*
   label: 'Link tool settings'
-  mapping:
-    settings:
-      type: mapping
-      mapping:
-        endpoint:
-          type: string
-          label: 'Endpoint'
 
 editorjs.widget.tool.code:
   type: editorjs.widget.tool.*
@@ -100,18 +93,6 @@ editorjs.widget.tool.image:
             allow-extensions:
               type: string
               label: 'Allowed file extensions'
-        endpoints:
-          type: mapping
-          mapping:
-            byFile:
-              type: string
-              label: 'Endpoint for upload'
-            byUrl:
-              type: string
-              label: 'Endpoint for upload by url'
-            fetchStyleUrl:
-              type: string
-              label: 'Fetch image style url'
 
 editorjs.widget.tool.checklist:
   type: editorjs.widget.tool.*

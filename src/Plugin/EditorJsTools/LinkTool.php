@@ -2,6 +2,7 @@
 
 namespace Drupal\editorjs\Plugin\EditorjsTools;
 
+use Drupal\Core\Url;
 use Drupal\editorjs\EditorJsToolsPluginBase;
 
 /**
@@ -11,7 +12,8 @@ use Drupal\editorjs\EditorJsToolsPluginBase;
  *   id = "linkTool",
  *   implementer = "LinkTool",
  *   label = @Translation("Link tool"),
- *   description = @Translation("Provides link tool.")
+ *   description = @Translation("Provides link tool."),
+ *   permission = "allow image tool"
  * )
  */
 class LinkTool extends EditorJsToolsPluginBase {
@@ -20,14 +22,7 @@ class LinkTool extends EditorJsToolsPluginBase {
    * {@inheritdoc}
    */
   public function settingsForm(array $settings = []) {
-    return [
-      'endpoint' => [
-        '#type' => 'textfield',
-        '#title' => $this->t('Endpoint'),
-        '#description' => $this->t('Endpoint for fetch link metadata.'),
-        '#default_value' => $settings['endpoint'] ?? '/admin/editorjs/link',
-      ],
-    ];
+    return [];
   }
 
   /**
@@ -43,7 +38,7 @@ class LinkTool extends EditorJsToolsPluginBase {
   public function prepareSettings($settings) {
     return [
       'config' => [
-        'endpoint' => $settings['endpoint'],
+        'endpoint' => Url::fromRoute('editorjs.link')->toString(),
       ],
     ];
   }

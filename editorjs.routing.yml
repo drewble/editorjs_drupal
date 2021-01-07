@@ -3,25 +3,28 @@ editorjs.image.upload:
   defaults:
     _controller: '\Drupal\editorjs\Controller\ImageController::upload'
   requirements:
-    _permission: 'administer'
+    _permission: 'allow image tool'
+    _csrf_request_header_token: 'TRUE'
 
 editorjs.image.upload_url:
   path: '/admin/editorjs/upload_url'
   defaults:
     _controller: '\Drupal\editorjs\Controller\ImageController::uploadUrl'
   requirements:
-    _permission: 'administer'
+    _permission: 'allow image tool'
+    _csrf_request_header_token: 'TRUE'
 
 editorjs.image.style_url:
   path: '/admin/editorjs/style_url'
   defaults:
     _controller: '\Drupal\editorjs\Controller\ImageController::styleUrl'
   requirements:
-    _permission: 'administer'
+    _permission: 'allow image tool'
+    _csrf_request_header_token: 'TRUE'
 
 editorjs.link:
   path: '/admin/editorjs/link'
   defaults:
     _controller: '\Drupal\editorjs\Controller\LinkController::fetch'
   requirements:
-    _permission: 'administer'
+    _permission: 'allow link tool'

@@ -5,7 +5,9 @@ namespace Drupal\editorjs\Plugin\Field\FieldWidget;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Link;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Url;
 use Drupal\editorjs\Event\EditorJsEvents;
 use Drupal\editorjs\Event\MassageValuesEvent;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -83,10 +85,16 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
       $tool_settings = $settings['tools'][$plugin_id] ?? [];
       /** @var \Drupal\editorjs\EditorJsToolsInterface $instance */
       $instance = $this->toolsManager->createInstance($plugin_id);
+      $description = $instance->description();
+      if (!empty($instance->getPluginDefinition()['permission'])) {
+        $description .= ' ' . $this->t('Please add permission to use this tool. <a href=":path" target="_blank">EditorJs</a>', [
+          ':path' => Url::fromRoute('user.admin_permissions', [], ['fragment' => 'module-editorjs'])->toString(),
+        ]);
+      }
       $element['tools'][$plugin_id]['status'] = [
         '#type' => 'checkbox',
         '#title' => $instance->label(),
-        '#description' => $instance->description(),
+        '#description' => $description,
         '#default_value' => $tool_settings['status'] ?? FALSE,
       ];
       $visible_name = "fields[{$this->fieldDefinition->getName()}][settings_edit_form][settings][tools][{$plugin_id}][enable]";
@@ -174,6 +182,9 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
       if ($tool['status']) {
         /** @var \Drupal\editorjs\EditorJsToolsInterface $instance */
         $instance = $this->toolsManager->createInstance($plugin_id);
+        if (!$instance->allowed()) {
+          continue;
+        }
         $tool = $instance->prepareSettings($tool['settings'] ?? []);
         $tool += [
           'class' => $instance->implementer(),

@@ -2,8 +2,10 @@
 
 namespace Drupal\editorjs\Plugin\EditorjsTools;
 
+use Drupal\Core\Access\CsrfRequestHeaderAccessCheck;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Url;
 use Drupal\editorjs\EditorJsToolsPluginBase;
 use Drupal\file\Plugin\Field\FieldType\FileItem;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -15,7 +17,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   id = "image",
  *   implementer = "ImageTool",
  *   label = @Translation("Image"),
- *   description = @Translation("Provides image tool.")
+ *   description = @Translation("Provides image tool."),
+ *   permission = "allow image tool"
  * )
  */
 class ImageTool extends EditorJsToolsPluginBase implements ContainerFactoryPluginInterface {
@@ -42,13 +45,21 @@ class ImageTool extends EditorJsToolsPluginBase implements ContainerFactoryPlugi
   protected $moduleHandler;
 
   /**
+   * The CSRF token generator.
+   *
+   * @var \Drupal\Core\Access\CsrfTokenGenerator
+   */
+  protected $tokenGenerator;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    $instance = new static($configuration, $plugin_id, $plugin_definition);
+    $instance = parent::create($container, $configuration, $plugin_id, $plugin_definition);
     $instance->entityRepository = $container->get('entity.repository');
     $instance->fileUsage = $container->get('file.usage');
     $instance->moduleHandler = $container->get('module_handler');
+    $instance->tokenGenerator = $container->get('csrf_token');
     return $instance;
   }
 
@@ -64,27 +75,6 @@ class ImageTool extends EditorJsToolsPluginBase implements ContainerFactoryPlugi
       '#default_value' => $settings['headers']['allow-extensions'] ?? 'png gif jpg jpeg',
       '#description' => $this->t('Separate extensions with a space or comma and do not include the leading dot.'),
       '#element_validate' => [[FileItem::class, 'validateExtensions']],
-    ];
-
-    $elements['endpoints']['byFile'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Endpoint for upload'),
-      '#description' => $this->t('Your backend file upload endpoint.'),
-      '#default_value' => $settings['endpoints']['byFile'] ?? '/admin/editorjs/upload',
-    ];
-
-    $elements['endpoints']['byUrl'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Endpoint for upload by url'),
-      '#description' => $this->t('Your endpoint that provides uploading by Url.'),
-      '#default_value' => $settings['endpoints']['byUrl'] ?? '/admin/editorjs/upload_url',
-    ];
-
-    $elements['endpoints']['fetchStyleUrl'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Fetch image style url'),
-      '#description' => $this->t('Endpoint for get image style url.'),
-      '#default_value' => $settings['endpoints']['fetchStyleUrl'] ?? '/admin/editorjs/style_url',
     ];
 
     return $elements;
@@ -106,9 +96,9 @@ class ImageTool extends EditorJsToolsPluginBase implements ContainerFactoryPlugi
         'image_styles' => image_style_options(),
       ];
     }
-
+    $settings['headers']['X-CSRF-Token'] = $this->tokenGenerator->get(CsrfRequestHeaderAccessCheck::TOKEN_KEY);
     $output['config']['additionalRequestHeaders'] = $settings['headers'];
-    $output['config']['endpoints'] = $settings['endpoints'];
+    $output['config']['endpoints'] = $this->getEndpoints();
     return $output;
   }
 
@@ -135,6 +125,20 @@ class ImageTool extends EditorJsToolsPluginBase implements ContainerFactoryPlugi
         $file->save();
       }
     }
+  }
+
+  /**
+   * Returns endpoints.
+   *
+   * @return array
+   *   The endpoints.
+   */
+  protected function getEndpoints(): array {
+    return [
+      'byFile' => Url::fromRoute('editorjs.image.upload')->toString(),
+      'byUrl' => Url::fromRoute('editorjs.image.upload_url')->toString(),
+      'fetchStyleUrl' => Url::fromRoute('editorjs.image.style_url')->toString(),
+    ];
   }
 
 }

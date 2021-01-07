@@ -2,14 +2,14 @@
 
 namespace Drupal\editorjs;
 
+use Drupal\Component\Plugin\PluginInspectionInterface;
+use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Entity\FieldableEntityInterface;
-use Drupal\Core\Form\FormStateInterface;
-use Drupal\editorjs\Plugin\Field\FieldType\EditorjsItem;
 
 /**
  * Interface for editorjs_tools plugins.
  */
-interface EditorJsToolsInterface {
+interface EditorJsToolsInterface extends PluginInspectionInterface {
 
   /**
    * Returns the translated plugin label.
@@ -78,5 +78,13 @@ interface EditorJsToolsInterface {
    * @see \Drupal\editorjs\Plugin\Field\FieldType\EditorjsItem::postSave
    */
   public function postSave(array $value, FieldableEntityInterface $entity, $update);
+
+  /**
+   * Checking permission to use tool.
+   *
+   * @return \Drupal\Core\Access\AccessResult
+   *   The status permission.
+   */
+  public function allowed(): AccessResult;
 
 }

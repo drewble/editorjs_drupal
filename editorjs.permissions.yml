@@ -1,0 +1,6 @@
+allow link tool:
+  title: 'Allow use Link tool'
+  description: 'Not recommended allow for anonymous user.'
+
+allow image tool:
+  title: 'Allow use Image tool'
