@@ -27,7 +27,7 @@ and plugin manager for easy adding new/custom EditorJs tools.
 
 ### Installation
 
-1. Using Composer:
+1. Using Composer: (recommended)
 
    If you want Composer to automatically download the Libraries
    to the /libraries folder when installing the module, you must
@@ -105,7 +105,7 @@ and plugin manager for easy adding new/custom EditorJs tools.
     | Delimiter (Tool) | `DRUPAL_ROOT/libraries/editorjs--delimiter/dist/bundle.js` | (https://github.com/editor-js/delimiter) |
     | Image (Tool) | `DRUPAL_ROOT/libraries/editorjs--delimiter/dist/bundle.js` | (https://github.com/batkor/editorjs-dimage/releases) |
     | Code PrismJs (Tool) (optional) | `DRUPAL_ROOT/libraries/editorjs-code-lang/dist/bundle.js` | (https://github.com/batkor/editorjs-dimage/releases) |
-
+3. Using Drush: Command `drush editorjs:d`
 ### Uninstallation
 
 See this page (https://www.drupal.org/docs/extending-drupal/uninstalling-modules)
