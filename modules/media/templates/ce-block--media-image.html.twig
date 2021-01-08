@@ -1,0 +1,17 @@
+{%
+  set classes = [
+  'ce-block__content',
+  'ce-media-image',
+  data.withBorder ? 'cmedia-image--withBorder',
+  data.withBackground ? 'media-image--withBackground',
+  data.stretched ? 'media-image--stretched',
+  data.center ? 'media-image--center',
+]
+%}
+
+<div {{ attributes.addClass(classes) }}>
+  <div class="media-image__inner">
+    {{ data.media }}
+  </div>
+  {% if data.caption %}<div class="cdx-input image-tool__caption">{{ data.caption }}</div>{% endif %}
+</div>

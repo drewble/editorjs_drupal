@@ -1,0 +1,31 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for "editorjs_media" module.
+ */
+
+/**
+ * Implements hook_theme().
+ */
+function editorjs_media_theme() {
+  return [
+    'ce_block__media_image' => [
+      'base hook' => 'ce_block',
+    ],
+  ];
+}
+
+/**
+ * Prepare variables for 'ce_block__media_image' template.
+ */
+function template_preprocess_ce_block__media_image(&$variables) {
+  $media = \Drupal::service('entity.repository')->loadEntityByUuid('media', $variables['data']['uuid']);
+  if (empty($media)) {
+    return;
+  }
+
+  $variables['data']['media'] = \Drupal::entityTypeManager()
+    ->getViewBuilder('media')
+    ->view($media, $variables['data']['view_mode']);
+}

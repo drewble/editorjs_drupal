@@ -1,0 +1,5 @@
+services:
+  editorjs_media.opener:
+    class: Drupal\editorjs_media\MediaLibraryEditorJsOpener
+    arguments:
+      [ '@entity_type.manager' ]
