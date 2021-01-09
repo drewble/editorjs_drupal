@@ -5,6 +5,7 @@ namespace Drupal\editorjs;
 use Drupal\Component\Plugin\PluginInspectionInterface;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Entity\FieldableEntityInterface;
+use Drupal\editor\Entity\Editor;
 
 /**
  * Interface for editorjs_tools plugins.
@@ -86,5 +87,14 @@ interface EditorJsToolsInterface extends PluginInspectionInterface {
    *   The status permission.
    */
   public function allowed(): AccessResult;
+
+  /**
+   * Returns a list of libraries this plugin requires.
+   *
+   * @return array
+   *   An array of libraries suitable for usage in a render API #attached
+   *   property.
+   */
+  public function getLibraries(): array;
 
 }

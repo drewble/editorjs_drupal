@@ -64,6 +64,7 @@ class MediaLibraryEditorJsOpener implements MediaLibraryOpenerInterface {
         ->load($fid);
       if ($file) {
         $values['url'] = $file->createFileUrl();
+        $values['file_uuid'] = $file->uuid();
       }
     }
 

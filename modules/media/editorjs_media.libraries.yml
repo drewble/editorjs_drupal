@@ -1,0 +1,5 @@
+media_image:
+  css:
+    component:
+      assets/editorjs-media.css: {}
+

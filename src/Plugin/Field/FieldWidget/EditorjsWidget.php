@@ -5,7 +5,6 @@ namespace Drupal\editorjs\Plugin\Field\FieldWidget;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\WidgetBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Link;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Url;
 use Drupal\editorjs\Event\EditorJsEvents;
@@ -36,6 +35,13 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
    * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
    */
   protected $dispatcher;
+
+  /**
+   * The tools instances collection.
+   *
+   * @var \Drupal\editorjs\EditorJsToolsInterface[]
+   */
+  protected $instanceTools = [];
 
   /**
    * {@inheritdoc}
@@ -123,13 +129,13 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
    * {@inheritdoc}
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
-    $settings = $this->prepareSettings($this->getSettings());
+
     $element['value'] = $element + [
       '#type' => 'hidden',
       '#default_value' => $items[$delta]->value ?? '',
       '#attached' => [
         'library' => ['editorjs/init'],
-        'drupalSettings' => ['editorjs' => [$items->getName() => $settings]],
+        'drupalSettings' => ['editorjs' => [$items->getName() => $this->prepareSettings()]],
       ],
       '#attributes' => [
         'class' => ['editorjs'],
@@ -138,6 +144,9 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
     ];
     // Save origin value.
     $form_state->set('origin:' . $items->getName() . ':' . $delta, $items[$delta]->value);
+    foreach ($this->getInstanceTools() as $instance) {
+      $element['value']['#attached']['library'] += $instance->getLibraries();
+    }
 
     return $element;
   }
@@ -147,7 +156,7 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
    */
   public function settingsSummary() {
     $summary = [$this->t('Enabled tools:')];
-    foreach ($this->getSetting('tools') as $plugin_id => $tool) {
+    foreach ($this->getSetting('tools') ?? [] as $plugin_id => $tool) {
       if (empty($tool['status'])) {
         continue;
       }
@@ -165,34 +174,26 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
   /**
    * Prepare settings tools for init EditorJs.
    *
-   * @param array $settings
-   *   The source saved settings.
-   *
    * @return array
    *   The settings for tools.
    *
    * @throws \Drupal\Component\Plugin\Exception\PluginException
    */
-  protected function prepareSettings(array $settings = []): array {
-    if (empty($settings['tools'])) {
-      return [];
-    }
-    // Getting only enabled tools.
-    foreach ($settings['tools'] as $plugin_id => &$tool) {
-      if ($tool['status']) {
-        /** @var \Drupal\editorjs\EditorJsToolsInterface $instance */
-        $instance = $this->toolsManager->createInstance($plugin_id);
-        if (!$instance->allowed()) {
-          continue;
-        }
-        $tool = $instance->prepareSettings($tool['settings'] ?? []);
-        $tool += [
-          'class' => $instance->implementer(),
-          'class_file' => $instance->getFile(),
-        ];
+  protected function prepareSettings(): array {
+    $tools = $this->getSetting('tools') ?? [];
+    $settings = [];
+
+    foreach ($this->getInstanceTools() as $plugin_id => $instance) {
+      if (!$instance->allowed()) {
         continue;
       }
-      unset($settings['tools'][$plugin_id]);
+      $tool = $instance->prepareSettings($tools[$plugin_id]['settings'] ?? []);
+      $tool += [
+        'class' => $instance->implementer(),
+        'class_file' => $instance->getFile(),
+      ];
+
+      $settings['tools'][$plugin_id] = $tool;
     }
 
     return $settings;
@@ -225,6 +226,30 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
       $dependencies['module'][] = $def['provider'];
     }
     return $dependencies;
+  }
+
+  /**
+   * Returns tools instances.
+   *
+   * @return \Drupal\editorjs\EditorJsToolsInterface[]
+   *   The instances collection.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\PluginException
+   */
+  protected function getInstanceTools() {
+
+    $tools = $this->getSetting('tools') ?? [];
+    foreach ($tools as $plugin_id => $tool) {
+      if (empty($tool['status'])) {
+        continue;
+      }
+      if (array_key_exists($plugin_id, $this->instanceTools)) {
+        continue;
+      }
+      $this->instanceTools[$plugin_id] = $this->toolsManager->createInstance($plugin_id);
+    }
+
+    return $this->instanceTools;
   }
 
 }

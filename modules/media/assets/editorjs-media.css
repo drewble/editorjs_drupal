@@ -1,0 +1,21 @@
+.ce-media-image.media-image--center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ce-media-image.media-image--withBorder {
+  border: 1px solid #e8e8eb;
+  padding: 1px;
+}
+
+.ce-media-image.media-image--withBackground {
+  display: block;
+  max-width: 60%;
+  margin: 0 auto;
+}
+
+.ce-media-image.media-image--stretched img {
+   max-width: none;
+   width: 100%;
+}

@@ -5,6 +5,8 @@
  * Primary module hooks for "editorjs_media" module.
  */
 
+use \Drupal\file\Entity\File;
+
 /**
  * Implements hook_theme().
  */
@@ -25,7 +27,21 @@ function template_preprocess_ce_block__media_image(&$variables) {
     return;
   }
 
-  $variables['data']['media'] = \Drupal::entityTypeManager()
-    ->getViewBuilder('media')
-    ->view($media, $variables['data']['view_mode']);
+  if (!empty($variables['data']['view_mode'])) {
+    $variables['data']['media'] = \Drupal::entityTypeManager()
+      ->getViewBuilder('media')
+      ->view($media, $variables['data']['view_mode']);
+  }
+  else {
+    $theme = empty($variables['data']['image_style']) ? 'image' : 'image_style';
+    $fid = $media->getSource()->getSourceFieldValue($media);
+    if ($fid && $file = File::load($fid)) {
+      $variables['data']['media'] = [
+        '#theme' => $theme,
+        '#style_name' => $variables['data']['image_style'] ?? NULL,
+        '#uri' => $file->getFileUri(),
+      ];
+    }
+  }
+  $variables['#attached']['library'][] = 'editorjs_media/media_image';
 }

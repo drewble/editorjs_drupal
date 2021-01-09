@@ -2,6 +2,7 @@
 
 namespace Drupal\editorjs_media\Plugin\EditorjsTools;
 
+use Drupal\Core\Access\CsrfRequestHeaderAccessCheck;
 use Drupal\Core\Url;
 use Drupal\editorjs\EditorJsToolsPluginBase;
 use Drupal\media_library\MediaLibraryState;
@@ -36,12 +37,20 @@ class MediaImageTool extends EditorJsToolsPluginBase {
   protected $entityDisplayRepository;
 
   /**
+   * The module manager.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     $instance = parent::create($container, $configuration, $plugin_id, $plugin_definition);
     $instance->entityTypeManager = $container->get('entity_type.manager');
     $instance->entityDisplayRepository = $container->get('entity_display.repository');
+    $instance->moduleHandler = $container->get('module_handler');
     return $instance;
   }
 
@@ -70,14 +79,29 @@ class MediaImageTool extends EditorJsToolsPluginBase {
       '#required' => TRUE,
     ];
 
-    $view_mode_options = $this->entityDisplayRepository->getViewModeOptions('media');
+    $view_mode_options = [
+      '' => $this->t('None'),
+    ] + $this->entityDisplayRepository->getViewModeOptions('media');
 
     $elements['view_mode'] = [
       '#type' => 'select',
       '#options' => $view_mode_options,
       '#title' => $this->t('Default view mode'),
-      '#default_value' => $settings['view_mode'] ?? 'default',
+      '#default_value' => $settings['view_mode'] ?? '',
       '#description' => $this->t('The view mode that an embedded media item should be displayed in by default. This can be overridden using the <code>data-view-mode</code> attribute.'),
+    ];
+
+    $elements['info'] = [
+      '#type' => 'container',
+      '#states' => [
+        'visible' => [
+          '[name="fields[field_editorjs][settings_edit_form][settings][tools][media_image][settings][view_mode]"]' => ['value' => ''],
+        ],
+      ],
+    ];
+
+    $elements['info'][] = [
+      '#markup' => $this->t('Adds feature for choose image style.'),
     ];
 
     return $elements;
@@ -104,16 +128,34 @@ class MediaImageTool extends EditorJsToolsPluginBase {
       current($settings['media_types']),
       1
     );
-    return [
-      'config' => [
-        'placeholder' => $settings['placeholder'],
-        'view_mode' => $settings['view_mode'] ?? 'default',
-        'DrupalMediaLibrary_url' => Url::fromRoute('media_library.ui')
-          ->setOption('query', $state->all())
-          ->toString(TRUE)
-          ->getGeneratedUrl(),
-        'DrupalMediaLibrary_dialogOptions' => MediaLibraryUiBuilder::dialogOptions(),
+    $output['config'] = [
+      'placeholder' => $settings['placeholder'],
+      'view_mode' => $settings['view_mode'] ?? '',
+      'endpoints' => [
+        'token' => \Drupal::csrfToken()->get(CsrfRequestHeaderAccessCheck::TOKEN_KEY),
+        'fetchStyleUrl' => Url::fromRoute('editorjs.image.style_url')->toString(),
       ],
+      'DrupalMediaLibrary_url' => Url::fromRoute('media_library.ui')
+        ->setOption('query', $state->all())
+        ->toString(TRUE)
+        ->getGeneratedUrl(),
+      'DrupalMediaLibrary_dialogOptions' => MediaLibraryUiBuilder::dialogOptions(),
+    ];
+    if ($this->moduleHandler->moduleExists('image') && empty($settings['view_mode'])) {
+      $output['config']['image_styles'] = image_style_options();
+    }
+
+    return $output;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getLibraries(): array {
+    return [
+      'core/jquery',
+      'core/drupal',
+      'core/drupal.ajax',
     ];
   }
 

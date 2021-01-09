@@ -83,4 +83,11 @@ abstract class EditorJsToolsPluginBase extends PluginBase implements EditorJsToo
     return AccessResult::allowedIfHasPermission($this->accountProxy, $this->pluginDefinition['permission']);
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getLibraries(): array {
+    return [];
+  }
+
 }
