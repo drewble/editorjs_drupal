@@ -31,7 +31,7 @@ class EditorjsCommands extends DrushCommands {
       'https://cdn.jsdelivr.net/npm/@editorjs/link@2.3.1/dist/bundle.min.js' => '/libraries/editorjs--link/dist/bundle.js',
       'https://cdn.jsdelivr.net/npm/@editorjs/list@1.6.1/dist/bundle.min.js' => '/libraries/editorjs--list/dist/bundle.js',
       'https://cdn.jsdelivr.net/npm/@editorjs/table@1.3.0/dist/bundle.min.js' => '/libraries/editorjs--table/dist/bundle.js',
-      'https://raw.githubusercontent.com/batkor/editorjs-code-lang/main/dist/bundle.js' => '/libraries/editorjs-code-lang/dist/bundle.js',
+      'https://raw.githubusercontent.com/batkor/editorjs-media-image/main/dist/bundle.js' => '/libraries/editorjs-media-image/dist/bundle.js',
     ];
     $app_dir = \Drupal::root();
     foreach ($libraries as $path => $destination) {

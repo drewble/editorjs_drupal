@@ -13,6 +13,7 @@ The module integrate EditorJs to Drupal 8 or higher
 - [x] [Delimiter](https://github.com/editor-js/delimiter)
 - [x] [image](https://github.com/batkor/editorjs-dimage)
 - [x] [Code PrismJs](https://github.com/batkor/editorjs-code-lang)
+- [x] [Media](https://github.com/batkor/editorjs-media-image)
 
 ### Description
 
@@ -83,6 +84,21 @@ and plugin manager for easy adding new/custom EditorJs tools.
       }
     }
     ```
+   If your need supproted Media entity:
+   ```json
+    {
+    "type": "package",
+      "package": {
+      "name": "batkor/editorjs-media-image",
+      "type": "drupal-library",
+      "version": "1.0.2",
+      "dist": {
+        "url": "https://github.com/batkor/editorjs-media-image/archive/1.0.2.zip",
+        "type": "zip"
+        }
+      }
+    }
+   ```
 2. Manually:
 
    1. Download, extract and copy this module to your directory
@@ -105,6 +121,7 @@ and plugin manager for easy adding new/custom EditorJs tools.
     | Delimiter (Tool) | `DRUPAL_ROOT/libraries/editorjs--delimiter/dist/bundle.js` | (https://github.com/editor-js/delimiter) |
     | Image (Tool) | `DRUPAL_ROOT/libraries/editorjs--delimiter/dist/bundle.js` | (https://github.com/batkor/editorjs-dimage/releases) |
     | Code PrismJs (Tool) (optional) | `DRUPAL_ROOT/libraries/editorjs-code-lang/dist/bundle.js` | (https://github.com/batkor/editorjs-dimage/releases) |
+    | Media (Tool) (optional) | `DRUPAL_ROOT/libraries/editorjs-media-image/dist/bundle.js` | (https://github.com/batkor/editorjs-media-image/releases) |
 3. Using Drush: Command `drush editorjs:d`
 ### Uninstallation
 
