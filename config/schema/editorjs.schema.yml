@@ -115,4 +115,4 @@ field.formatter.settings.editorjs_default:
       type: sequence
       label: 'Tools for show or hide'
       sequence:
-        type: integer
+        type: string

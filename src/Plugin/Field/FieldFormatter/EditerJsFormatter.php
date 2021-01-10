@@ -58,7 +58,7 @@ class EditerJsFormatter extends FormatterBase {
         $this->t('Hide selected tools'),
       ],
       '#title_display' => 'invisible',
-      '#default_value' => $this->getSetting('negate') ?? 1,
+      '#default_value' => (int) $this->getSetting('negate') ?? 1,
     ];
 
     $tools = ['paragraph' => 'Paragraph'];
