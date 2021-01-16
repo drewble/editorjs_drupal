@@ -4,8 +4,8 @@ namespace Drupal\editorjs\Plugin\Field\FieldType;
 
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\Core\Field\FieldItemBase;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
-use Drupal\Core\Field\Plugin\Field\FieldType\MapItem;
 use Drupal\Core\TypedData\DataDefinition;
 
 /**
@@ -20,14 +20,14 @@ use Drupal\Core\TypedData\DataDefinition;
  *   cardinality = 1
  * )
  */
-class EditorjsItem extends MapItem {
+class EditorjsItem extends FieldItemBase {
 
   /**
    * {@inheritdoc}
    */
   public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
     $properties['value'] = DataDefinition::create('string')
-      ->setLabel(t('Encode value'));
+      ->setLabel(t('Raw value'));
 
     return $properties;
   }
@@ -35,15 +35,32 @@ class EditorjsItem extends MapItem {
   /**
    * {@inheritdoc}
    */
-  public function toArray() {
-    return \unserialize($this->getValue()['value']);
+  public static function schema(FieldStorageDefinitionInterface $field_definition) {
+    return [
+      'columns' => [
+        'value' => [
+          'type' => 'blob',
+          'size' => 'big',
+          'serialize' => TRUE,
+        ],
+      ],
+    ];
   }
 
   /**
    * {@inheritdoc}
    */
   public static function generateSampleValue(FieldDefinitionInterface $field_definition) {
-    return ['value' => ''];
+    return [
+      'value' => Json::encode([
+        [
+          'type' => 'paragraph',
+          'data' => [
+            'text' => 'This is Editor.js a Block-Styled editor.',
+          ],
+        ],
+      ]),
+    ];
   }
 
   /**
@@ -61,17 +78,6 @@ class EditorjsItem extends MapItem {
       }
     }
     return FALSE;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function __get($name) {
-    if (!isset($this->values[$name])) {
-      $this->values[$name] = '';
-    }
-
-    return $this->values[$name];
   }
 
 }

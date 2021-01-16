@@ -82,7 +82,7 @@ class PrismJsToolTest extends EditorJsFieldTestBase {
         'code' => $value,
         'languageCode' => 'php',
       ],
-    ], "<code class=\"language-php\" class=\"ce-code\">{$value}</code>");
+    ], "<code class=\"language-php\">{$value}</code>");
   }
 
 }

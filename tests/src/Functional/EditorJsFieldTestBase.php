@@ -38,7 +38,7 @@ abstract class EditorJsFieldTestBase extends BrowserTestBase {
       'entity_type' => 'node',
       'bundle' => 'article',
     ])->save();
-    
+
   }
 
   /**

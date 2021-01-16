@@ -81,13 +81,11 @@ class EditorJsFieldTest extends EditorJsFieldTestBase {
             'image' => [
               'status' => TRUE,
               'settings' => [
-                'headers' => [],
-                'endpoints' => [],
+                'headers' => ['allow-extensions' => 'png gif jpg jpeg'],
               ],
             ],
             'linkTool' => [
               'status' => TRUE,
-              'settings' => ['endpoint' => ''],
             ],
             'table' => [
               'status' => TRUE,
