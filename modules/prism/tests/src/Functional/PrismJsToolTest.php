@@ -4,6 +4,11 @@ namespace Drupal\Tests\editorjs_prism\Functional;
 
 use Drupal\Tests\editorjs\Functional\EditorJsFieldTestBase;
 
+/**
+ * Tests the prismJs tool.
+ *
+ * @group editorjs
+ */
 class PrismJsToolTest extends EditorJsFieldTestBase {
 
   /**
