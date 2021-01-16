@@ -1,6 +1,6 @@
 .ce-block__content {
   position: relative;
-  max-width: 650px;
+  max-width: inherit;
   margin: 0 auto;
   -webkit-transition: background-color .15s ease;
   transition: background-color .15s ease;
