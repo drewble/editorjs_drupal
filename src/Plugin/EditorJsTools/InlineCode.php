@@ -27,7 +27,7 @@ class InlineCode extends EditorJsToolsPluginBase {
    * {@inheritdoc}
    */
   public function getFile() {
-    return '/libraries/editorjs--inline-code/dist/bundle.js';
+    return "/{$this->getModulePath('editorjs')}/assets/vendor/inline-code.min.js";
   }
 
   /**

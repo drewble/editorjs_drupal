@@ -1,5 +1,0 @@
-services:
-  editorjs.commands:
-    class: \Drupal\editorjs\Commands\EditorjsCommands
-    tags:
-      - { name: drush.command }

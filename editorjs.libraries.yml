@@ -8,44 +8,44 @@ init:
 
 core:
   js:
-    /libraries/editorjs--editorjs/dist/editor.js: {}
+    assets/vendor/editor.min.js: { minified: true }
 
 base:
   css:
     layout:
-      assets/base.css: {}
+      assets/css/base.css: {}
 
 list:
   css:
     component:
-      assets/list.css: { }
+      assets/css/list.css: { }
 
 checklist:
   css:
     component:
-      assets/checklist.css: { }
+      assets/css/checklist.css: { }
 
 linkTool:
   css:
     component:
-      assets/linkTool.css: { }
+      assets/css/linkTool.css: { }
 
 table:
   css:
     component:
-      assets/table.css: { }
+      assets/css/table.css: { }
 
 code:
   css:
     component:
-      assets/code.css: { }
+      assets/css/code.css: { }
 
 delimiter:
   css:
     component:
-      assets/delimiter.css: { }
+      assets/css/delimiter.css: { }
 
 image:
   css:
     component:
-      assets/image.css: { }
+      assets/css/image.css: { }

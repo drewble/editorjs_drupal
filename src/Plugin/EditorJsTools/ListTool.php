@@ -20,7 +20,7 @@ class ListTool extends EditorJsToolsPluginBase {
    * {@inheritdoc}
    */
   public function getFile() {
-    return '/libraries/editorjs--list/dist/bundle.js';
+    return "/{$this->getModulePath('editorjs')}/assets/vendor/list.min.js";
   }
 
   /**

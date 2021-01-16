@@ -39,7 +39,7 @@ class PrismJsCodeTool extends EditorJsToolsPluginBase {
    * {@inheritdoc}
    */
   public function getFile() {
-    return '/libraries/editorjs-code-lang/dist/bundle.js';
+    return "/{$this->getModulePath('editorjs_prism')}/assets/code-lang.min.js";
   }
 
   /**

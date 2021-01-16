@@ -29,7 +29,7 @@ class LinkTool extends EditorJsToolsPluginBase {
    * {@inheritdoc}
    */
   public function getFile() {
-    return '/libraries/editorjs--link/dist/bundle.js';
+    return "/{$this->getModulePath('editorjs')}/assets/vendor/link.min.js";
   }
 
   /**

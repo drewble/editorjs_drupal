@@ -33,7 +33,7 @@ class CodeTool extends EditorJsToolsPluginBase {
    * {@inheritdoc}
    */
   public function getFile() {
-    return '/libraries/editorjs--code/dist/bundle.js';
+    return "/{$this->getModulePath('editorjs')}/assets/vendor/code.min.js";
   }
 
   /**

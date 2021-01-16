@@ -24,11 +24,19 @@ abstract class EditorJsToolsPluginBase extends PluginBase implements EditorJsToo
   protected $accountProxy;
 
   /**
+   * The module handler.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     $instance = new static($configuration, $plugin_id, $plugin_definition);
     $instance->accountProxy = $container->get('current_user');
+    $instance->moduleHandler = $container->get('module_handler');
     return $instance;
   }
 
@@ -88,6 +96,19 @@ abstract class EditorJsToolsPluginBase extends PluginBase implements EditorJsToo
    */
   public function getLibraries(): array {
     return [];
+  }
+
+  /**
+   * Returns path to module.
+   *
+   * @param string $moduleName
+   *   The module name.
+   *
+   * @return string
+   *   The path to module.
+   */
+  protected function getModulePath($moduleName) {
+    return $this->moduleHandler->getModule($moduleName)->getPath();
   }
 
 }

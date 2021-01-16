@@ -111,7 +111,7 @@ class MediaImageTool extends EditorJsToolsPluginBase {
    * {@inheritdoc}
    */
   public function getFile() {
-    return '/libraries/editorjs-media-image/dist/bundle.js';
+    return "/{$this->getModulePath('editorjs_media')}/assets/media-image.min.js";
   }
 
   /**
