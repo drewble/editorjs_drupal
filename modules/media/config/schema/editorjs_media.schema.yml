@@ -1,0 +1,18 @@
+editorjs.widget.tool.media_image:
+  type: editorjs.widget.tool.*
+  label: 'PrismJs Media tool settings'
+  mapping:
+    settings:
+      type: mapping
+      mapping:
+        placeholder:
+          type: string
+          label: 'Placeholder'
+        media_types:
+          type: sequence
+          label: 'Media types'
+          sequence:
+            type: string
+        view_mode:
+          type: string
+          label: 'Default view mode'

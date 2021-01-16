@@ -116,3 +116,11 @@ field.formatter.settings.editorjs_default:
       label: 'Tools for show or hide'
       sequence:
         type: string
+
+field.value.editorjs:
+  type: mapping
+  label: 'Default value'
+  mapping:
+    value:
+      type: string
+      label: 'Value'
