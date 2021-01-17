@@ -4,6 +4,7 @@ namespace Drupal\editorjs\Plugin\EditorjsTools;
 
 use Drupal\Core\Access\CsrfRequestHeaderAccessCheck;
 use Drupal\Core\Entity\FieldableEntityInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Url;
 use Drupal\editorjs\EditorJsToolsPluginBase;
@@ -66,7 +67,7 @@ class ImageTool extends EditorJsToolsPluginBase implements ContainerFactoryPlugi
   /**
    * {@inheritdoc}
    */
-  public function settingsForm(array $settings = []) {
+  public function settingsForm(FieldDefinitionInterface $fieldDefinition, array $settings = []) {
     $elements = [];
 
     $elements['headers']['allow-extensions'] = [

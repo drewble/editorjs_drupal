@@ -5,6 +5,7 @@ namespace Drupal\editorjs;
 use Drupal\Component\Plugin\PluginBase;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Entity\FieldableEntityInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -65,7 +66,7 @@ abstract class EditorJsToolsPluginBase extends PluginBase implements EditorJsToo
   /**
    * {@inheritdoc}
    */
-  public function settingsForm(array $settings = []) {
+  public function settingsForm(FieldDefinitionInterface $fieldDefinition, array $settings = []) {
 
     $elements['inlineToolbar'] = [
       '#type' => 'checkbox',

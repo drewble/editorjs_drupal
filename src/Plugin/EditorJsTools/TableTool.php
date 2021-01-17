@@ -2,6 +2,7 @@
 
 namespace Drupal\editorjs\Plugin\EditorjsTools;
 
+use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\editorjs\EditorJsToolsPluginBase;
 
 /**
@@ -19,8 +20,8 @@ class TableTool extends EditorJsToolsPluginBase {
   /**
    * {@inheritdoc}
    */
-  public function settingsForm(array $settings = []) {
-    $elements = parent::settingsForm($settings);
+  public function settingsForm(FieldDefinitionInterface $fieldDefinition, array $settings = []) {
+    $elements = parent::settingsForm($fieldDefinition, $settings);
 
     $elements['rows'] = [
       '#type' => 'number',

@@ -2,6 +2,7 @@
 
 namespace Drupal\editorjs_prism\Plugin\EditorjsTools;
 
+use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\editorjs\EditorJsToolsPluginBase;
 
 /**
@@ -19,7 +20,7 @@ class PrismJsCodeTool extends EditorJsToolsPluginBase {
   /**
    * {@inheritdoc}
    */
-  public function settingsForm(array $settings = []) {
+  public function settingsForm(FieldDefinitionInterface $fieldDefinition, array $settings = []) {
     return [
       'placeholder' => [
         '#type' => 'textfield',
@@ -53,7 +54,7 @@ class PrismJsCodeTool extends EditorJsToolsPluginBase {
       if (empty($item)) {
         continue;
       }
-      list($code, $label) = explode('|', $item);
+      [$code, $label] = explode('|', $item);
       $languages[trim($code)] = trim($label);
     }
     return [

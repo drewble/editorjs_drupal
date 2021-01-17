@@ -115,7 +115,7 @@ class EditorjsWidget extends WidgetBase implements ContainerFactoryPluginInterfa
         ],
       ];
 
-      $settings_elements = $instance->settingsForm($tool_settings['settings'] ?? []);
+      $settings_elements = $instance->settingsForm($this->fieldDefinition, $tool_settings['settings'] ?? []);
       $element['tools'][$plugin_id]['settings'] += $settings_elements;
       if (empty($settings_elements)) {
         $element['tools'][$plugin_id]['settings']['#access'] = FALSE;

@@ -2,6 +2,7 @@
 
 namespace Drupal\editorjs\Plugin\EditorjsTools;
 
+use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Url;
 use Drupal\editorjs\EditorJsToolsPluginBase;
 
@@ -21,7 +22,7 @@ class LinkTool extends EditorJsToolsPluginBase {
   /**
    * {@inheritdoc}
    */
-  public function settingsForm(array $settings = []) {
+  public function settingsForm(FieldDefinitionInterface $fieldDefinition, array $settings = []) {
     return [];
   }
 

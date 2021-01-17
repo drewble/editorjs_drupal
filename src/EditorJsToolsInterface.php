@@ -5,6 +5,7 @@ namespace Drupal\editorjs;
 use Drupal\Component\Plugin\PluginInspectionInterface;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Entity\FieldableEntityInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\editor\Entity\Editor;
 
 /**
@@ -39,13 +40,15 @@ interface EditorJsToolsInterface extends PluginInspectionInterface {
   /**
    * Returns form elements for EditorJs toll settings.
    *
+   * @param \Drupal\Core\Field\FieldDefinitionInterface $fieldDefinition
+   *   The field definition.
    * @param array $settings
    *   The saved settings.
    *
    * @return array
    *   The renderable form elements.
    */
-  public function settingsForm(array $settings = []);
+  public function settingsForm(FieldDefinitionInterface $fieldDefinition, array $settings = []);
 
   /**
    * Returns the Drupal root-relative path to the file EditorJs tools.

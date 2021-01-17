@@ -3,6 +3,7 @@
 namespace Drupal\editorjs_media\Plugin\EditorjsTools;
 
 use Drupal\Core\Access\CsrfRequestHeaderAccessCheck;
+use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Url;
 use Drupal\editorjs\EditorJsToolsPluginBase;
 use Drupal\media_library\MediaLibraryState;
@@ -57,7 +58,7 @@ class MediaImageTool extends EditorJsToolsPluginBase {
   /**
    * {@inheritdoc}
    */
-  public function settingsForm(array $settings = []) {
+  public function settingsForm(FieldDefinitionInterface $fieldDefinition, array $settings = []) {
     $elements['placeholder'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Placeholder'),
@@ -71,10 +72,15 @@ class MediaImageTool extends EditorJsToolsPluginBase {
     foreach ($media_types as $id => $media_type) {
       $option_types[$id] = $media_type->label();
     }
+    $default_value = $settings['media_types'] ?? [];
+    if (empty($default_value) && !empty($option_types)) {
+      reset($option_types);
+      $default_value = [key($option_types)];
+    }
     $elements['media_types'] = [
       '#type' => 'checkboxes',
       '#title' => $this->t('Media types selectable in the Media Library'),
-      '#default_value' => $settings['media_types'] ?? [],
+      '#default_value' => $default_value,
       '#options' => $option_types,
       '#required' => TRUE,
     ];
@@ -95,7 +101,7 @@ class MediaImageTool extends EditorJsToolsPluginBase {
       '#type' => 'container',
       '#states' => [
         'visible' => [
-          '[name="fields[field_editorjs][settings_edit_form][settings][tools][media_image][settings][view_mode]"]' => ['value' => ''],
+          "[name=\"fields[{$fieldDefinition->getName()}][settings_edit_form][settings][tools][media_image][settings][view_mode]\"]" => ['value' => ''],
         ],
       ],
     ];

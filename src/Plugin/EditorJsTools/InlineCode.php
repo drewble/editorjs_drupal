@@ -2,6 +2,7 @@
 
 namespace Drupal\editorjs\Plugin\EditorjsTools;
 
+use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\editorjs\EditorJsToolsPluginBase;
 
 /**
@@ -19,7 +20,7 @@ class InlineCode extends EditorJsToolsPluginBase {
   /**
    * {@inheritdoc}
    */
-  public function settingsForm(array $settings = []) {
+  public function settingsForm(FieldDefinitionInterface $fieldDefinition, array $settings = []) {
     return [];
   }
 
