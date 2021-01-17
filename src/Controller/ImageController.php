@@ -168,8 +168,11 @@ final class ImageController implements ContainerInjectionInterface {
       'file_validate_extensions' => [$this->allowExtension($request)],
       'file_validate_size' => [Bytes::toInt(Environment::getUploadMaxSize())],
     ];
-
-    $file = $this->saveData(file_get_contents($uploadFile->getRealPath()), 'public://' . $uploadFile->getClientOriginalName(), $validators);
+    $directory = trim($request->headers->get('x-directory', ''), '/');
+    if (!empty($directory)) {
+      $directory .= '/';
+    }
+    $file = $this->saveData(file_get_contents($uploadFile->getRealPath()), 'public://' . $directory . $uploadFile->getClientOriginalName(), $validators);
     if (!$file) {
       return new JsonResponse(['success' => FALSE]);
     }
@@ -209,8 +212,11 @@ final class ImageController implements ContainerInjectionInterface {
       'file_validate_extensions' => [$this->allowExtension($request)],
       'file_validate_size' => [Bytes::toInt(Environment::getUploadMaxSize())],
     ];
-
-    $file = $this->saveData($data, 'public://' . basename($url), $validators);
+    $directory = trim($request->headers->get('x-directory', ''), '/');
+    if (!empty($directory)) {
+      $directory .= '/';
+    }
+    $file = $this->saveData($data, 'public://' . $directory . basename($url), $validators);
     if (!$file) {
       return new JsonResponse(['success' => FALSE]);
     }
@@ -288,6 +294,8 @@ final class ImageController implements ContainerInjectionInterface {
     }
 
     try {
+      $dir = $this->fileSystem->dirname($destination);
+      $this->fileSystem->prepareDirectory($dir, FileSystemInterface::CREATE_DIRECTORY);
       $uri = $this->fileSystem->saveData($data, $destination, $replace);
       /** @var \Drupal\file\Entity\File $file */
       $file = File::create([

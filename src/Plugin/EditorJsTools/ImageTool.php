@@ -78,6 +78,13 @@ class ImageTool extends EditorJsToolsPluginBase implements ContainerFactoryPlugi
       '#element_validate' => [[FileItem::class, 'validateExtensions']],
     ];
 
+    $elements['headers']['x-directory'] = [
+      '#type' => 'textfield',
+      '#default_value' => $settings['headers']['x-directory'] ?? '',
+      '#title' => $this->t('Upload directory'),
+      '#description' => $this->t("A directory relative to Drupal's files directory where uploaded images will be stored."),
+    ];
+
     return $elements;
   }
 
