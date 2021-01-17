@@ -164,7 +164,7 @@ final class ImageController implements ContainerInjectionInterface {
     // There is always a file size limit due to the PHP server limit.
     $validators = [
       'file_validate_extensions' => [$this->allowExtension($request)],
-      'file_validate_size' => [Bytes::toNumber(Environment::getUploadMaxSize())],
+      'file_validate_size' => [Bytes::toInt(Environment::getUploadMaxSize())],
     ];
 
     $file = _file_save_upload_single($uploadFile, 'image', $validators, 'public://');
@@ -205,9 +205,9 @@ final class ImageController implements ContainerInjectionInterface {
 
     $validators = [
       'file_validate_extensions' => [$this->allowExtension($request)],
-      'file_validate_size' => [Bytes::toNumber(Environment::getUploadMaxSize())],
+      'file_validate_size' => [Bytes::toInt(Environment::getUploadMaxSize())],
     ];
-    
+
     $file = $this->saveData($data, 'public://' . basename($url), $validators);
     if (!$file) {
       return new JsonResponse(['success' => FALSE]);
