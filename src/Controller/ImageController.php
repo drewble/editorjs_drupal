@@ -152,6 +152,8 @@ final class ImageController implements ContainerInjectionInterface {
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The response.
    *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
   public function upload(Request $request): JsonResponse {
@@ -167,7 +169,7 @@ final class ImageController implements ContainerInjectionInterface {
       'file_validate_size' => [Bytes::toInt(Environment::getUploadMaxSize())],
     ];
 
-    $file = _file_save_upload_single($uploadFile, 'image', $validators, 'public://');
+    $file = $this->saveData(file_get_contents($uploadFile->getRealPath()), 'public://' . $uploadFile->getClientOriginalName(), $validators);
     if (!$file) {
       return new JsonResponse(['success' => FALSE]);
     }
@@ -301,6 +303,7 @@ final class ImageController implements ContainerInjectionInterface {
         if (count($existing_files)) {
           $existing = reset($existing_files);
           $file->fid = $existing->id();
+          $file->set('uuid', $existing->uuid());
           $file->setOriginalId($existing->id());
           $file->setFilename($existing->getFilename());
         }
