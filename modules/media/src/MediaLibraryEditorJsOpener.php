@@ -6,7 +6,7 @@ use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Ajax\AjaxResponse;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\editor\Ajax\EditorDialogSave;
+use Drupal\editorjs_media\Ajax\EditorJsDialogSave;
 use Drupal\media_library\MediaLibraryOpenerInterface;
 use Drupal\media_library\MediaLibraryState;
 
@@ -68,7 +68,7 @@ class MediaLibraryEditorJsOpener implements MediaLibraryOpenerInterface {
       }
     }
 
-    $response->addCommand(new EditorDialogSave(['editorjs_opener' => $values]));
+    $response->addCommand(new EditorJsDialogSave($values));
 
     return $response;
   }

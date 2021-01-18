@@ -162,7 +162,6 @@ class MediaImageTool extends EditorJsToolsPluginBase {
       'core/jquery',
       'core/drupal',
       'core/drupal.ajax',
-      'editor/drupal.editor.dialog',
     ];
   }
 

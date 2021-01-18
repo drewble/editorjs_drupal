@@ -250,6 +250,9 @@ final class ImageController implements ContainerInjectionInterface {
     if (!$file) {
       throw new BadRequestHttpException('File not found.');
     }
+    if (empty($data['image_style_id'])) {
+      return new JsonResponse(['url' => $file->createFileUrl()]);
+    }
     /** @var \Drupal\image\Entity\ImageStyle $image_style */
     $image_style = $this
       ->entityTypeManager
