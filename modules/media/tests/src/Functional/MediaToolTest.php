@@ -29,7 +29,6 @@ class MediaToolTest extends EditorJsFieldTestBase {
     'field',
     'node',
     'media',
-    'editor',
     'editorjs_media',
   ];
 
