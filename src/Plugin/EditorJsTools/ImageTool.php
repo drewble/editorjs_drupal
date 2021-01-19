@@ -85,6 +85,13 @@ class ImageTool extends EditorJsToolsPluginBase implements ContainerFactoryPlugi
       '#description' => $this->t("A directory relative to Drupal's files directory where uploaded images will be stored."),
     ];
 
+    $elements['image_style_picker'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Image style picker'),
+      '#description' => $this->t("Allow choose image style."),
+      '#default_value' => $settings['image_style_picker'] ?? FALSE,
+    ];
+
     return $elements;
   }
 
@@ -99,7 +106,7 @@ class ImageTool extends EditorJsToolsPluginBase implements ContainerFactoryPlugi
    * {@inheritdoc}
    */
   public function prepareSettings($settings) {
-    if ($this->moduleHandler->moduleExists('image')) {
+    if ($this->moduleHandler->moduleExists('image') && !empty($settings['image_style_picker'])) {
       $output['config'] = [
         'image_styles' => image_style_options(),
       ];
