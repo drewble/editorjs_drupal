@@ -22,6 +22,9 @@ function editorjs_media_theme() {
  * Prepare variables for 'ce_block__media_image' template.
  */
 function template_preprocess_ce_block__media_image(&$variables) {
+  if (empty($variables['data']['uuid'])) {
+    return;
+  }
   $media = \Drupal::service('entity.repository')->loadEntityByUuid('media', $variables['data']['uuid']);
   if (empty($media)) {
     return;

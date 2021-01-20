@@ -47,6 +47,10 @@ function editorjs_theme_suggestions_ce_block(array $variables) {
 function template_preprocess_ce_block__image(&$variables) {
   $theme = empty($variables['data']['image_style']) ? 'image' : 'image_style';
 
+  if (empty($variables['data']['file']['uuid'])) {
+    return;
+  }
+
   /** @var \Drupal\file\Entity\File $file */
   $file = \Drupal::service('entity.repository')
     ->loadEntityByUuid('file', $variables['data']['file']['uuid']);
