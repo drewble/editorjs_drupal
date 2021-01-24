@@ -16,6 +16,7 @@ use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\Core\Utility\Token;
 use Drupal\file\Entity\File;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -88,6 +89,13 @@ final class ImageController implements ContainerInjectionInterface {
   protected $messenger;
 
   /**
+   * The token system.
+   *
+   * @var \Drupal\Core\Utility\Token
+   */
+  protected $token;
+
+  /**
    * ImageController constructor.
    *
    * @param \Drupal\Core\File\FileSystemInterface $fileSystem
@@ -106,6 +114,8 @@ final class ImageController implements ContainerInjectionInterface {
    *   The logger factory.
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   The messenger.
+   * @param \Drupal\Core\Utility\Token $token
+   *   The token system.
    */
   public function __construct(
     FileSystemInterface $fileSystem,
@@ -115,7 +125,8 @@ final class ImageController implements ContainerInjectionInterface {
     StreamWrapperManagerInterface $streamWrapperManager,
     ConfigFactoryInterface $configFactory,
     LoggerChannelFactoryInterface $loggerChannelFactory,
-    MessengerInterface $messenger
+    MessengerInterface $messenger,
+    Token $token
   ) {
     $this->fileSystem = $fileSystem;
     $this->accountProxy = $accountProxy;
@@ -125,6 +136,7 @@ final class ImageController implements ContainerInjectionInterface {
     $this->configFactory = $configFactory;
     $this->loggerChannelFactory = $loggerChannelFactory;
     $this->messenger = $messenger;
+    $this->token = $token;
   }
 
   /**
@@ -139,7 +151,8 @@ final class ImageController implements ContainerInjectionInterface {
       $container->get('stream_wrapper_manager'),
       $container->get('config.factory'),
       $container->get('logger.factory'),
-      $container->get('messenger')
+      $container->get('messenger'),
+      $container->get('token')
     );
   }
 
@@ -172,7 +185,8 @@ final class ImageController implements ContainerInjectionInterface {
     if (!empty($directory)) {
       $directory .= '/';
     }
-    $file = $this->saveData(file_get_contents($uploadFile->getRealPath()), 'public://' . $directory . $uploadFile->getClientOriginalName(), $validators);
+    $data = file_get_contents($uploadFile->getRealPath());
+    $file = $this->saveData($data, 'public://' . $directory . $uploadFile->getClientOriginalName(), $validators);
     if (!$file) {
       return new JsonResponse(['success' => FALSE]);
     }
@@ -290,6 +304,7 @@ final class ImageController implements ContainerInjectionInterface {
     if (empty($destination)) {
       $destination = $this->configFactory->get('system.file')->get('default_scheme') . '://';
     }
+    $destination = $this->token->replace($destination, [], ['clear' => TRUE]);
     if (!$this->streamWrapperManager->isValidUri($destination)) {
       $this->loggerChannelFactory->get('file')->notice('The data could not be saved because the destination %destination is invalid. This may be caused by improper use of file_save_data() or a missing stream wrapper.', ['%destination' => $destination]);
       $this->messenger->addError($this->t('The data could not be saved because the destination is invalid. More information is available in the system log.'));

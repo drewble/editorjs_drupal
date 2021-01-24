@@ -82,7 +82,7 @@ class ImageTool extends EditorJsToolsPluginBase implements ContainerFactoryPlugi
       '#type' => 'textfield',
       '#default_value' => $settings['headers']['x-directory'] ?? '',
       '#title' => $this->t('Upload directory'),
-      '#description' => $this->t("A directory relative to Drupal's files directory where uploaded images will be stored."),
+      '#description' => $this->t("A directory relative to Drupal's files directory where uploaded images will be stored. Supports tokens."),
     ];
 
     $elements['image_style_picker'] = [
