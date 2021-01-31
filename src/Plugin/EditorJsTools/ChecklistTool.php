@@ -20,7 +20,7 @@ class ChecklistTool extends EditorJsToolsPluginBase {
    * {@inheritdoc}
    */
   public function getFile() {
-    return "/{$this->getModulePath('editorjs')}/assets/vendor/checklist.min.js";
+    return "/libraries/editorjs_dependencies/editorjs/tools/checklist.min.js";
   }
 
   /**

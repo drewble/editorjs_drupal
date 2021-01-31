@@ -28,7 +28,7 @@ class DelimiterTool extends EditorJsToolsPluginBase {
    * {@inheritdoc}
    */
   public function getFile() {
-    return "/{$this->getModulePath('editorjs')}/assets/vendor/delimiter.min.js";
+    return "/libraries/editorjs_dependencies/editorjs/tools/delimiter.min.js";
   }
 
   /**

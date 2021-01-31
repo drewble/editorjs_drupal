@@ -1,9 +1,9 @@
 core:
   js:
-    assets/prism.min.js: { minified: true }
-    assets/plugins/prism-markup.min.js: { minified: true }
-    assets/plugins/prism-markup-templating.min.js: { minified: true }
-    assets/plugins/prism-normalize-whitespace.min.js: { minified: true }
+    /libraries/editorjs_dependencies/prism/prism.js: { }
+    /libraries/editorjs_dependencies/prism/components/prism-markup.min.js: { minified: true }
+    /libraries/editorjs_dependencies/prism/components/prism-markup-templating.min.js: { minified: true }
+    /libraries/editorjs_dependencies/prism/plugins/prism-normalize-whitespace.min.js: { minified: true }
   css:
     component:
       assets/editorjs-prism.css: { }
@@ -13,49 +13,49 @@ core:
 theme:
   css:
     component:
-      assets/themes/prism-okaidia.min.css: { minified: true }
+      /libraries/editorjs_dependencies/prism/themes/prism-okaidia.css: { }
 
 php:
   js:
-    assets/plugins/prism-php.min.js: { minified: true }
-    assets/plugins/prism-php-extras.min.js: { minified: true }
+    /libraries/editorjs_dependencies/prism/components/prism-php.min.js: { minified: true }
+    /libraries/editorjs_dependencies/prism/components/prism-php-extras.min.js: { minified: true }
   dependencies:
     - editorjs_prism/core
 
 css:
   js:
-    assets/plugins/prism-css.min.js: { minified: true }
-    assets/plugins/prism-css-extras.min.js: { minified: true }
+    /libraries/editorjs_dependencies/prism/components/prism-css.min.js: { minified: true }
+    /libraries/editorjs_dependencies/prism/components/prism-css-extras.min.js: { minified: true }
   dependencies:
     - editorjs_prism/core
 
 js:
   js:
-    assets/plugins/prism-clike.min.js: { minified: true }
-    assets/plugins/prism-javascript.min.js: { minified: true }
+    /libraries/editorjs_dependencies/prism/components/prism-clike.min.js: { minified: true }
+    /libraries/editorjs_dependencies/prism/components/prism-javascript.min.js: { minified: true }
   dependencies:
     - editorjs_prism/core
 
 twig:
   js:
-    assets/plugins/prism-twig.min.js: { minified: true }
+    /libraries/editorjs_dependencies/prism/components/prism-twig.min.js: { minified: true }
   dependencies:
     - editorjs_prism/core
 
 json:
   js:
-    assets/plugins/prism-json.min.js: { minified: true }
+    /libraries/editorjs_dependencies/prism/components/prism-json.min.js: { minified: true }
   dependencies:
     - editorjs_prism/core
 
 yaml:
   js:
-    assets/plugins/prism-yaml.min.js: { minified: true }
+    /libraries/editorjs_dependencies/prism/components/prism-yaml.min.js: { minified: true }
   dependencies:
     - editorjs_prism/core
 
 bash:
   js:
-    assets/plugins/prism-bash.min.js: { minified: true }
+    /libraries/editorjs_dependencies/prism/components/prism-bash.min.js: { minified: true }
   dependencies:
     - editorjs_prism/core

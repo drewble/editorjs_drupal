@@ -58,7 +58,7 @@ class Header extends EditorJsToolsPluginBase {
    * {@inheritdoc}
    */
   public function getFile() {
-    return "/{$this->getModulePath('editorjs')}/assets/vendor/header.min.js";
+    return "/libraries/editorjs_dependencies/editorjs/tools/header.min.js";
   }
 
   /**

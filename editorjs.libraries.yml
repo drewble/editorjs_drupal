@@ -7,9 +7,14 @@ init:
     - editorjs/core
 
 core:
+  remote: https://github.com/codex-team/editor.js
   version: 2.19.1
+  license:
+    name: Apache-2.0
+    url: https://github.com/codex-team/editor.js/blob/next/LICENSE
+    gpl-compatible: true
   js:
-    assets/vendor/editor.min.js: { minified: true }
+    /libraries/editorjs_dependencies/editorjs/core.min.js: { minified: true }
 
 base:
   css:

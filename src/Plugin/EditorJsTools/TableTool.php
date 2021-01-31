@@ -44,7 +44,7 @@ class TableTool extends EditorJsToolsPluginBase {
    * {@inheritdoc}
    */
   public function getFile() {
-    return "/{$this->getModulePath('editorjs')}/assets/vendor/table.min.js";
+    return "/libraries/editorjs_dependencies/editorjs/tools/table.min.js";
   }
 
   /**

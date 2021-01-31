@@ -1,7 +1,7 @@
 name: Editorjs media
 type: module
 description: This module provides plugin for EditorJs supprotes Media entity.
-package: Custom
+package: EditorJs
 core: 8.x
 core_version_requirement: ^8 || ^9
 

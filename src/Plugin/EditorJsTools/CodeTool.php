@@ -34,7 +34,7 @@ class CodeTool extends EditorJsToolsPluginBase {
    * {@inheritdoc}
    */
   public function getFile() {
-    return "/{$this->getModulePath('editorjs')}/assets/vendor/code.min.js";
+    return "/libraries/editorjs_dependencies/editorjs/tools/code.min.js";
   }
 
   /**

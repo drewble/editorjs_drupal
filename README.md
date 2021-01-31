@@ -30,7 +30,9 @@ and plugin manager for easy adding new/custom EditorJs tools.
 
 1. Using Composer: (recommended)
 
-   `composer require drupal/editorjs`
+   1. `composer require drupal/editorjs`
+   2. `composer require batkor/editorjs_dependencies`
+
 2. Manually:
 
    Download, extract and copy this module to your directory
