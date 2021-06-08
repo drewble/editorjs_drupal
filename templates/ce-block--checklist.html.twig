@@ -1,6 +1,6 @@
 <div class="ce-block__content cdx-checklist">
   {% for item in data.items %}
-    <div class="cdx-checklist__item cdx-checklist__item--{% if item.checked %}checked{% endif %}">
+    <div class="cdx-checklist__item{% if item.checked %} cdx-checklist__item--checked{% endif %}">
       <span class="cdx-checklist__item-checkbox"></span>
       <div class="cdx-checklist__item-text">{{ item.text }}</div>
     </div>
