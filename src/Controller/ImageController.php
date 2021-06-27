@@ -5,6 +5,7 @@ namespace Drupal\editorjs\Controller;
 use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\Bytes;
 use Drupal\Component\Utility\Environment;
+use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Entity\EntityRepositoryInterface;
@@ -230,7 +231,10 @@ final class ImageController implements ContainerInjectionInterface {
     if (!empty($directory)) {
       $directory .= '/';
     }
-    $file = $this->saveData($data, 'public://' . $directory . basename($url), $validators);
+    $parsed_url = UrlHelper::parse($url);
+    $destination = "public://$directory";
+    $destination .= basename($parsed_url['path']);
+    $file = $this->saveData($data, $destination, $validators);
     if (!$file) {
       return new JsonResponse(['success' => FALSE]);
     }
