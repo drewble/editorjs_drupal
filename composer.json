@@ -1,16 +1,38 @@
 {
-    "name": "drupal/editorjs",
-    "type": "drupal-module",
-    "description": "This module integrate EditorJs",
-    "keywords": ["Drupal", "EditorJS"],
-    "homepage": "https://www.drupal.org/project/editorjs",
-    "support": {
-        "issues": "https://www.drupal.org/project/issues/editorjs",
-        "source": "https://gitlab.com/batkor/editorjs"
-    },
-    "require": {
-        "php": ">=7.3.0",
-        "ext-dom": "*",
-        "batkor/editorjs_dependencies": "^1.0"
+  "name": "drupal/editorjs_drupal",
+  "type": "drupal-module",
+  "description": "This module integrate EditorJs",
+  "keywords": [
+    "Drupal",
+    "EditorJS"
+  ],
+  "homepage": "https://github.com/drewble/editorjs_drupal",
+  "support": {
+    "issues": "https://github.com/drewble/editorjs_drupal/issues",
+    "source": "https://github.com/drewble/editorjs_drupal"
+  },
+  "repositories": {
+    "drewble/editorjs_dependencies": {
+      "type": "package",
+      "package": {
+        "name": "drewble/editorjs_dependencies",
+        "version": "v1.0.0",
+        "type": "drupal-library",
+        "dist": {
+          "url": "https://github.com/drewble/editorjs_dependencies/archive/v1.0.0.zip",
+          "type": "zip"
+        },
+        "source": {
+          "url": "https://github.com/drewble/editorjs_dependencies",
+          "type": "git",
+          "reference": "v1.0.0"
+        }
+      }
     }
+  },
+  "require": {
+    "php": ">=7.3.0",
+    "ext-dom": "*",
+    "drewble/editorjs_dependencies": "^1.0"
+  }
 }
